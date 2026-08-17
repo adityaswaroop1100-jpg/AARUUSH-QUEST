@@ -1,0 +1,6 @@
+{
+  "name": "Aaruush Quest",
+  "description": "Interactive cyber festival quest with 17 domain portals, real-time timer, node grid map, micro-challenges, and championship leaderboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
