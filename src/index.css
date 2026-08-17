@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", sans-serif;
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-body: "Geist", sans-serif;
+
+  --color-primary: #dbfcff;
+  --color-primary-container: #00f0ff;
+  --color-primary-fixed: #7df4ff;
+  --color-primary-fixed-dim: #00dbe9;
+  --color-on-primary: #00363a;
+  --color-on-primary-container: #006970;
+
+  --color-secondary: #ffb693;
+  --color-secondary-container: #fe6b00;
+  --color-secondary-fixed: #ffdbcc;
+  --color-secondary-fixed-dim: #ffb693;
+  --color-on-secondary: #561f00;
+
+  --color-tertiary: #fff5dc;
+  --color-tertiary-container: #ffd602;
+  --color-tertiary-fixed: #ffe170;
+  --color-tertiary-fixed-dim: #e9c400;
+  --color-on-tertiary: #3a3000;
+
+  --color-background: #131318;
+  --color-surface: #131318;
+  --color-surface-dim: #131318;
+  --color-surface-bright: #39383e;
+  --color-surface-variant: #35343a;
+  --color-surface-container: #1f1f25;
+  --color-surface-container-low: #1b1b20;
+  --color-surface-container-lowest: #0e0e13;
+  --color-surface-container-high: #2a292f;
+  --color-surface-container-highest: #35343a;
+  --color-on-surface: #e4e1e9;
+  --color-on-surface-variant: #b9cacb;
+
+  --color-outline: #849495;
+  --color-outline-variant: #3b494b;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+}
+
+/* Digital Grid Background */
+.digital-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(228, 225, 233, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(228, 225, 233, 0.04) 1px, transparent 1px);
+}
+
+.digital-grid-dense {
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 240, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.06) 1px, transparent 1px);
+}
+
+/* Subtle Noise Overlay */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Glass Panels */
+.glass-panel {
+  background: rgba(27, 27, 32, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+}
+
+.glass-panel-gold {
+  background: rgba(35, 30, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 214, 2, 0.3);
+}
+
+.glass-panel-active {
+  background: rgba(0, 240, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+}
+
+/* Cyber Neon Glows */
+.glow-text-cyan {
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.6), 0 0 30px rgba(0, 240, 255, 0.3);
+}
+
+.glow-text-yellow {
+  text-shadow: 0 0 15px rgba(255, 214, 2, 0.7), 0 0 35px rgba(255, 214, 2, 0.4);
+}
+
+.glow-text-orange {
+  text-shadow: 0 0 15px rgba(254, 107, 0, 0.7), 0 0 30px rgba(254, 107, 0, 0.3);
+}
+
+.glow-border {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+}
+
+.glow-border-gold {
+  box-shadow: 0 0 25px rgba(255, 214, 2, 0.35);
+}
+
+.glow-btn-primary {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.glow-btn-primary:hover {
+  box-shadow: 0 0 35px rgba(0, 240, 255, 0.75);
+}
+
+/* Radar Scan Line */
+@keyframes radarSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar {
+  animation: radarSweep 6s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.35));
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(0, 240, 255, 0.75));
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3.5s ease-in-out infinite;
+}
+
+/* Solar Rays & Sunburst Animations */
+@keyframes sunSpinSlow {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes sunSpinReverse {
+  0% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+@keyframes solarFlarePulse {
+  0%, 100% {
+    opacity: 0.75;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.animate-sun-spin {
+  animation: sunSpinSlow 28s linear infinite;
+}
+
+.animate-sun-reverse {
+  animation: sunSpinReverse 38s linear infinite;
+}
+
+.animate-solar-pulse {
+  animation: solarFlarePulse 4s ease-in-out infinite;
+}
+
+/* Custom Cyber Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0e0e13;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a292f;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #006970;
+}
+
