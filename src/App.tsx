@@ -362,7 +362,7 @@ export default function App() {
       {screen === 'challenge' && currentPortal && (
         <ChallengeModal
           portal={currentPortal}
-          initialQuestionIndex={portalQuestionIndices[currentPortal.id] || 0}
+          initialQuestionIndex={0}
           timeRemaining={timeRemaining}
           score={score}
           completedCount={completedPortals.length}

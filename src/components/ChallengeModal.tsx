@@ -43,7 +43,6 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   const [answeredState, setAnsweredState] = useState<'pending' | 'correct' | 'wrong'>('pending');
   const [showHint, setShowHint] = useState<boolean>(false);
   const [earnedThisQuestion, setEarnedThisQuestion] = useState<number>(0);
-  const [autoReturnCountdown, setAutoReturnCountdown] = useState<number | null>(null);
 
   const startTime = useRef(Date.now());
   const autoReturnTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -75,26 +74,25 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     if (isCorrect) {
       sound.playCorrect();
       setAnsweredState('correct');
-      // IMMEDIATELY record answer and update score/portal in App.tsx!
+      // Record answer and update score/portal in App.tsx immediately!
       const earned = onRecordAnswer(portal.id, true, timeSpentSec, qPoints);
       setEarnedThisQuestion(earned);
 
-      // Start automatic return countdown (3 seconds) so player can return automatically or choose next question
-      setAutoReturnCountdown(3);
-      const interval = setInterval(() => {
-        setAutoReturnCountdown((prev) => {
-          if (prev === null || prev <= 1) {
-            clearInterval(interval);
-            return null;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      autoReturnTimerRef.current = setTimeout(() => {
-        clearInterval(interval);
-        onBackToMap();
-      }, 3000);
+      // Auto-advance to next question if more questions exist, or finish if on the last question
+      if (questionIndex + 1 < questionsList.length) {
+        // Clear any previous timer
+        if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+        
+        autoReturnTimerRef.current = setTimeout(() => {
+          handleNextQuestion();
+        }, 1800);
+      } else {
+        // Last question in this domain! Return to map after celebration
+        if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+        autoReturnTimerRef.current = setTimeout(() => {
+          onBackToMap();
+        }, 2200);
+      }
     } else {
       sound.playWrong();
       setAnsweredState('wrong');
@@ -107,21 +105,27 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
       clearTimeout(autoReturnTimerRef.current);
       autoReturnTimerRef.current = null;
     }
-    setAutoReturnCountdown(null);
     sound.playSelect();
-    const nextIdx = (questionIndex + 1) % questionsList.length;
-    setQuestionIndex(nextIdx);
-    setSelectedOption(null);
-    setAnsweredState('pending');
-    setShowHint(false);
-    setEarnedThisQuestion(0);
-    startTime.current = Date.now();
-    if (onAdvanceQuestion) {
-      onAdvanceQuestion(questionsList.length);
+    if (questionIndex + 1 < questionsList.length) {
+      setQuestionIndex((prev) => prev + 1);
+      setSelectedOption(null);
+      setAnsweredState('pending');
+      setShowHint(false);
+      setEarnedThisQuestion(0);
+      startTime.current = Date.now();
+      if (onAdvanceQuestion) {
+        onAdvanceQuestion(questionsList.length);
+      }
+    } else {
+      onBackToMap();
     }
   };
 
   const handleRetryQuestion = () => {
+    if (autoReturnTimerRef.current) {
+      clearTimeout(autoReturnTimerRef.current);
+      autoReturnTimerRef.current = null;
+    }
     sound.playSelect();
     setSelectedOption(null);
     setAnsweredState('pending');
@@ -360,12 +364,14 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
               <div className="flex items-center justify-between font-bold text-sm mb-1.5">
                 <span className="flex items-center gap-1.5">
                   {answeredState === 'correct'
-                    ? `✅ PORTAL BREACHED! (+${earnedThisQuestion} PTS)`
-                    : '⚠️ CIPHER ERROR // ACCESS DENIED'}
+                    ? (questionIndex + 1 < questionsList.length
+                        ? `✅ QUESTION ${questionIndex + 1} OF ${questionsList.length} SOLVED! (+${earnedThisQuestion} PTS)`
+                        : `🎉 ALL ${questionsList.length} QUESTIONS COMPLETED! (+${earnedThisQuestion} PTS)`)
+                    : '⚠️ INCORRECT CIPHER // TRY AGAIN'}
                 </span>
-                {answeredState === 'correct' && autoReturnCountdown !== null && (
+                {answeredState === 'correct' && (
                   <span className="text-[11px] text-green-400/80 font-normal">
-                    Auto-return in {autoReturnCountdown}s...
+                    {questionIndex + 1 < questionsList.length ? 'Next question in 1.8s...' : 'Returning to map...'}
                   </span>
                 )}
               </div>
@@ -376,32 +382,43 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
+                {answeredState === 'correct' && questionIndex + 1 < questionsList.length && (
+                  <button
+                    onClick={handleNextQuestion}
+                    className="flex-1 min-w-[160px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                  >
+                    <span>NEXT QUESTION ({questionIndex + 2}/{questionsList.length})</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
+
                 <button
                   onClick={onBackToMap}
-                  className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/50 text-cyan-200 font-bold tracking-wider transition-all cursor-pointer shadow-sm"
+                  className="flex-1 min-w-[130px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/50 text-cyan-200 font-bold tracking-wider transition-all cursor-pointer shadow-sm"
                 >
                   <MapPin className="w-3.5 h-3.5 text-cyan-400" />
                   <span>RETURN TO MAP</span>
                 </button>
 
-                {answeredState === 'correct' && questionsList.length > 1 && (
-                  <button
-                    onClick={handleNextQuestion}
-                    className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold tracking-wider transition-all cursor-pointer shadow-[0_0_12px_rgba(245,158,11,0.3)]"
-                  >
-                    <span>NEXT QUESTION ({((questionIndex + 1) % questionsList.length) + 1}/{questionsList.length})</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                )}
-
                 {answeredState === 'wrong' && (
-                  <button
-                    onClick={handleRetryQuestion}
-                    className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-red-900/60 hover:bg-red-800 border border-red-500/50 text-red-200 font-bold tracking-wider transition-all cursor-pointer"
-                  >
-                    <RetryIcon className="w-3.5 h-3.5 text-red-400" />
-                    <span>TRY AGAIN</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={handleRetryQuestion}
+                      className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-red-900/60 hover:bg-red-800 border border-red-500/50 text-red-200 font-bold tracking-wider transition-all cursor-pointer"
+                    >
+                      <RetryIcon className="w-3.5 h-3.5 text-red-400" />
+                      <span>TRY AGAIN</span>
+                    </button>
+                    {questionIndex + 1 < questionsList.length && (
+                      <button
+                        onClick={handleNextQuestion}
+                        className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold tracking-wider transition-all cursor-pointer"
+                      >
+                        <span>SKIP QUESTION</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>
