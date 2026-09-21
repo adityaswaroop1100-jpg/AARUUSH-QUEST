@@ -77,26 +77,24 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
       // Record answer and update score/portal in App.tsx immediately!
       const earned = onRecordAnswer(portal.id, true, timeSpentSec, qPoints);
       setEarnedThisQuestion(earned);
-
-      // Auto-advance to next question if more questions exist, or finish if on the last question
-      if (questionIndex + 1 < questionsList.length) {
-        // Clear any previous timer
-        if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
-        
-        autoReturnTimerRef.current = setTimeout(() => {
-          handleNextQuestion();
-        }, 1800);
-      } else {
-        // Last question in this domain! Return to map after celebration
-        if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
-        autoReturnTimerRef.current = setTimeout(() => {
-          onBackToMap();
-        }, 2200);
-      }
     } else {
       sound.playWrong();
       setAnsweredState('wrong');
       onRecordAnswer(portal.id, false, timeSpentSec, 0);
+    }
+
+    // Fast, snappy auto-advance for both right and wrong answers!
+    if (questionIndex + 1 < questionsList.length) {
+      if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+      autoReturnTimerRef.current = setTimeout(() => {
+        handleNextQuestion();
+      }, 750);
+    } else {
+      // Last question in this domain! Return to map quickly
+      if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
+      autoReturnTimerRef.current = setTimeout(() => {
+        onBackToMap();
+      }, 950);
     }
   };
 
@@ -367,13 +365,13 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
                     ? (questionIndex + 1 < questionsList.length
                         ? `✅ QUESTION ${questionIndex + 1} OF ${questionsList.length} SOLVED! (+${earnedThisQuestion} PTS)`
                         : `🎉 ALL ${questionsList.length} QUESTIONS COMPLETED! (+${earnedThisQuestion} PTS)`)
-                    : '⚠️ INCORRECT CIPHER // TRY AGAIN'}
+                    : (questionIndex + 1 < questionsList.length
+                        ? `⚠️ INCORRECT (-0 PTS)`
+                        : `⚠️ INCORRECT // ALL QUESTIONS COMPLETE`)}
                 </span>
-                {answeredState === 'correct' && (
-                  <span className="text-[11px] text-green-400/80 font-normal">
-                    {questionIndex + 1 < questionsList.length ? 'Next question in 1.8s...' : 'Returning to map...'}
-                  </span>
-                )}
+                <span className="text-[11px] font-normal opacity-80">
+                  {questionIndex + 1 < questionsList.length ? 'Next question...' : 'Returning to map...'}
+                </span>
               </div>
               
               <p className="text-white/90 text-xs leading-relaxed mb-3">
@@ -382,10 +380,10 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
-                {answeredState === 'correct' && questionIndex + 1 < questionsList.length && (
+                {questionIndex + 1 < questionsList.length && (
                   <button
                     onClick={handleNextQuestion}
-                    className="flex-1 min-w-[160px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                    className="flex-1 min-w-[160px] flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold tracking-wider transition-all cursor-pointer shadow-[0_0_12px_rgba(245,158,11,0.3)]"
                   >
                     <span>NEXT QUESTION ({questionIndex + 2}/{questionsList.length})</span>
                     <ArrowRight className="w-4 h-4" />
@@ -399,27 +397,6 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
                   <MapPin className="w-3.5 h-3.5 text-cyan-400" />
                   <span>RETURN TO MAP</span>
                 </button>
-
-                {answeredState === 'wrong' && (
-                  <>
-                    <button
-                      onClick={handleRetryQuestion}
-                      className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-red-900/60 hover:bg-red-800 border border-red-500/50 text-red-200 font-bold tracking-wider transition-all cursor-pointer"
-                    >
-                      <RetryIcon className="w-3.5 h-3.5 text-red-400" />
-                      <span>TRY AGAIN</span>
-                    </button>
-                    {questionIndex + 1 < questionsList.length && (
-                      <button
-                        onClick={handleNextQuestion}
-                        className="flex-1 min-w-[120px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold tracking-wider transition-all cursor-pointer"
-                      >
-                        <span>SKIP QUESTION</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </>
-                )}
               </div>
             </div>
           )}
