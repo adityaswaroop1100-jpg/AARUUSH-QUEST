@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Compass, RotateCw, RotateCcw, Square, Sparkles, CheckCircle, XCircle, ArrowRight, Lightbulb } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Compass, RotateCw, RotateCcw, Square, Sparkles, CheckCircle, XCircle, ArrowRight, Lightbulb, Trophy, RotateCcw as RetryIcon, MapPin } from 'lucide-react';
 import { DomainPortal } from '../types';
 import { ChallengeVisualizer } from './Visualizers';
 import { DomainLogo } from './DomainLogos';
@@ -7,10 +7,13 @@ import { sound } from '../utils/audio';
 
 interface ChallengeModalProps {
   portal: DomainPortal;
+  initialQuestionIndex?: number;
   timeRemaining: number;
+  score: number;
   completedCount: number;
   totalPortals: number;
-  onSolveChallenge: (portalId: string, isCorrect: boolean, timeSpentSec: number, pointsEarned?: number) => void;
+  onRecordAnswer: (portalId: string, isCorrect: boolean, timeSpentSec: number, points?: number) => number;
+  onAdvanceQuestion?: (totalQuestions: number) => void;
   onBackToMap: () => void;
   onUseHint: () => boolean;
   hintCount: number;
@@ -18,10 +21,13 @@ interface ChallengeModalProps {
 
 export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   portal,
+  initialQuestionIndex = 0,
   timeRemaining,
+  score,
   completedCount,
   totalPortals,
-  onSolveChallenge,
+  onRecordAnswer,
+  onAdvanceQuestion,
   onBackToMap,
   onUseHint,
   hintCount,
@@ -30,13 +36,26 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     ? portal.challenges
     : [portal.challenge];
 
-  const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [questionIndex, setQuestionIndex] = useState<number>(
+    Math.min(initialQuestionIndex, questionsList.length - 1)
+  );
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [answeredState, setAnsweredState] = useState<'pending' | 'correct' | 'wrong'>('pending');
   const [showHint, setShowHint] = useState<boolean>(false);
-  const [correctCount, setCorrectCount] = useState<number>(0);
-  const [accumulatedPoints, setAccumulatedPoints] = useState<number>(0);
-  const startTime = React.useRef(Date.now());
+  const [earnedThisQuestion, setEarnedThisQuestion] = useState<number>(0);
+  const [autoReturnCountdown, setAutoReturnCountdown] = useState<number | null>(null);
+
+  const startTime = useRef(Date.now());
+  const autoReturnTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoReturnTimerRef.current) {
+        clearTimeout(autoReturnTimerRef.current);
+      }
+    };
+  }, []);
 
   // Format timer MM:SS
   const minutes = Math.floor(timeRemaining / 60);
@@ -50,34 +69,62 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     
     setSelectedOption(idx);
     const isCorrect = idx === currentChallenge.correctOptionIndex;
-    const qPoints = currentChallenge.basePoints || 10;
+    const qPoints = currentChallenge.basePoints || 20;
+    const timeSpentSec = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
 
     if (isCorrect) {
       sound.playCorrect();
       setAnsweredState('correct');
-      setCorrectCount(prev => prev + 1);
-      setAccumulatedPoints(prev => prev + qPoints);
+      // IMMEDIATELY record answer and update score/portal in App.tsx!
+      const earned = onRecordAnswer(portal.id, true, timeSpentSec, qPoints);
+      setEarnedThisQuestion(earned);
+
+      // Start automatic return countdown (3 seconds) so player can return automatically or choose next question
+      setAutoReturnCountdown(3);
+      const interval = setInterval(() => {
+        setAutoReturnCountdown((prev) => {
+          if (prev === null || prev <= 1) {
+            clearInterval(interval);
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      autoReturnTimerRef.current = setTimeout(() => {
+        clearInterval(interval);
+        onBackToMap();
+      }, 3000);
     } else {
       sound.playWrong();
       setAnsweredState('wrong');
+      onRecordAnswer(portal.id, false, timeSpentSec, 0);
     }
+  };
 
-    // Delay to display visual feedback before next question or concluding portal
-    setTimeout(() => {
-      if (questionIndex + 1 < questionsList.length) {
-        setQuestionIndex(prev => prev + 1);
-        setSelectedOption(null);
-        setAnsweredState('pending');
-        setShowHint(false);
-      } else {
-        const totalTimeSpent = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
-        const avgTimePerQuestion = Math.max(1, Math.round(totalTimeSpent / questionsList.length));
-        const finalCorrectCount = isCorrect ? correctCount + 1 : correctCount;
-        const finalPoints = isCorrect ? accumulatedPoints + qPoints : accumulatedPoints;
-        const overallSuccess = finalCorrectCount > 0;
-        onSolveChallenge(portal.id, overallSuccess, avgTimePerQuestion, finalPoints);
-      }
-    }, 1400);
+  const handleNextQuestion = () => {
+    if (autoReturnTimerRef.current) {
+      clearTimeout(autoReturnTimerRef.current);
+      autoReturnTimerRef.current = null;
+    }
+    setAutoReturnCountdown(null);
+    sound.playSelect();
+    const nextIdx = (questionIndex + 1) % questionsList.length;
+    setQuestionIndex(nextIdx);
+    setSelectedOption(null);
+    setAnsweredState('pending');
+    setShowHint(false);
+    setEarnedThisQuestion(0);
+    startTime.current = Date.now();
+    if (onAdvanceQuestion) {
+      onAdvanceQuestion(questionsList.length);
+    }
+  };
+
+  const handleRetryQuestion = () => {
+    sound.playSelect();
+    setSelectedOption(null);
+    setAnsweredState('pending');
   };
 
   const handleHintClick = () => {
@@ -126,10 +173,26 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
           <div className="p-1.5 rounded-full bg-[#1b1b20] border border-cyan-500/30 group-hover:border-cyan-400 transition-colors">
             <Compass className="w-5 h-5 text-cyan-300 group-hover:rotate-45 transition-transform" />
           </div>
-          <span className="font-['Space_Grotesk',sans-serif] font-bold text-base tracking-wider text-white">
-            AARUUSH QUEST
-          </span>
+          <div className="flex flex-col">
+            <span className="font-['Space_Grotesk',sans-serif] font-bold text-sm md:text-base tracking-wider text-white">
+              AARUUSH QUEST
+            </span>
+            <span className="font-mono text-[10px] text-cyan-400/80">
+              ← MAP
+            </span>
+          </div>
         </button>
+
+        {/* Live Score & Portals Breached Pill */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#1b1b20]/90 border border-amber-500/40 font-mono font-bold text-amber-300 text-xs shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+            <Trophy className="w-3.5 h-3.5 text-amber-400" />
+            <span>{score} PTS</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-[#1b1b20]/90 border border-cyan-500/30 font-mono text-cyan-300 text-xs">
+            <span>BREACHED: {completedCount}/{totalPortals}</span>
+          </div>
+        </div>
 
         {/* Timer Box */}
         <div
@@ -285,21 +348,62 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             })}
           </div>
 
-          {/* Feedback Explanation Message */}
+          {/* Feedback Explanation & Action Panel */}
           {answeredState !== 'pending' && (
             <div
-              className={`p-3 rounded-lg font-mono text-xs mt-2 text-left animate-fade-in ${
+              className={`p-4 rounded-xl font-mono text-xs mt-3 text-left animate-fade-in border shadow-lg ${
                 answeredState === 'correct'
-                  ? 'bg-green-950/50 border border-green-500/40 text-green-300'
-                  : 'bg-red-950/50 border border-red-500/40 text-red-300'
+                  ? 'bg-green-950/70 border-green-500/50 text-green-300'
+                  : 'bg-red-950/70 border-red-500/50 text-red-300'
               }`}
             >
-              <div className="font-bold flex items-center gap-1.5 mb-1">
-                {answeredState === 'correct' ? '✅ PORTAL BREACH SUCCESSFUL! (+POINTS)' : '⚠️ CIPHER ERROR // DATA LOGGED'}
+              <div className="flex items-center justify-between font-bold text-sm mb-1.5">
+                <span className="flex items-center gap-1.5">
+                  {answeredState === 'correct'
+                    ? `✅ PORTAL BREACHED! (+${earnedThisQuestion} PTS)`
+                    : '⚠️ CIPHER ERROR // ACCESS DENIED'}
+                </span>
+                {answeredState === 'correct' && autoReturnCountdown !== null && (
+                  <span className="text-[11px] text-green-400/80 font-normal">
+                    Auto-return in {autoReturnCountdown}s...
+                  </span>
+                )}
               </div>
-              <p className="text-white/80 text-[11px] leading-relaxed">
+              
+              <p className="text-white/90 text-xs leading-relaxed mb-3">
                 {currentChallenge.explanation}
               </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/10">
+                <button
+                  onClick={onBackToMap}
+                  className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/50 text-cyan-200 font-bold tracking-wider transition-all cursor-pointer shadow-sm"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>RETURN TO MAP</span>
+                </button>
+
+                {answeredState === 'correct' && questionsList.length > 1 && (
+                  <button
+                    onClick={handleNextQuestion}
+                    className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold tracking-wider transition-all cursor-pointer shadow-[0_0_12px_rgba(245,158,11,0.3)]"
+                  >
+                    <span>NEXT QUESTION ({((questionIndex + 1) % questionsList.length) + 1}/{questionsList.length})</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+
+                {answeredState === 'wrong' && (
+                  <button
+                    onClick={handleRetryQuestion}
+                    className="flex-1 min-w-[140px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-red-900/60 hover:bg-red-800 border border-red-500/50 text-red-200 font-bold tracking-wider transition-all cursor-pointer"
+                  >
+                    <RetryIcon className="w-3.5 h-3.5 text-red-400" />
+                    <span>TRY AGAIN</span>
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

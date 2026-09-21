@@ -24,6 +24,7 @@ export default function App() {
   const [failedPortals, setFailedPortals] = useState<string[]>([]);
   const [streak, setStreak] = useState<number>(0);
   const [maxStreak, setMaxStreak] = useState<number>(0);
+  const [portalQuestionIndices, setPortalQuestionIndices] = useState<Record<string, number>>({});
 
   // Power-ups
   const [powerUps, setPowerUps] = useState({
@@ -99,25 +100,33 @@ export default function App() {
     setScreen('challenge');
   };
 
-  // Solve Challenge
-  const handleSolveChallenge = (portalId: string, isCorrect: boolean, timeSpentSec: number, pointsEarned?: number) => {
+  // Real-time answer recording whenever any question is answered
+  const handleRecordAnswer = (portalId: string, isCorrect: boolean, timeSpentSec: number, basePoints?: number): number => {
     const portal = portals.find((p) => p.id === portalId);
-    if (!portal) return;
+    if (!portal) return 0;
 
     if (isCorrect) {
-      const isFirstCompletion = !completedPortals.includes(portalId);
-      
-      if (isFirstCompletion) {
-        setCompletedPortals((prev) => [...prev, portalId]);
-      }
+      setCompletedPortals((prev) => {
+        if (!prev.includes(portalId)) {
+          const updated = [...prev, portalId];
+          if (updated.length >= portals.length) {
+            setTimeout(() => {
+              setIsTimerActive(false);
+              setScreen('completed');
+            }, 1200);
+          }
+          return updated;
+        }
+        return prev;
+      });
 
       // Calculate score based on actual questions answered correctly
-      let earnedPoints = (pointsEarned !== undefined && pointsEarned > 0)
-        ? pointsEarned
-        : portal.challenge.basePoints;
+      let earnedPoints = (basePoints !== undefined && basePoints > 0)
+        ? basePoints
+        : (portal.challenge.basePoints || 20);
 
       // Speed bonus
-      if (timeSpentSec <= portal.challenge.timeBonusLimitSec) {
+      if (timeSpentSec <= (portal.challenge.timeBonusLimitSec || 15)) {
         earnedPoints += 10;
       }
 
@@ -138,25 +147,19 @@ export default function App() {
         return next;
       });
 
-      // Check if all 17 portals completed
-      const totalCompletedAfterThis = isFirstCompletion ? completedPortals.length + 1 : completedPortals.length;
-      if (totalCompletedAfterThis >= portals.length) {
-        setTimeout(() => {
-          setIsTimerActive(false);
-          setScreen('completed');
-        }, 1200);
-        return;
-      }
+      return earnedPoints;
     } else {
-      if (!failedPortals.includes(portalId)) {
-        setFailedPortals((prev) => [...prev, portalId]);
-      }
+      setFailedPortals((prev) => (prev.includes(portalId) ? prev : [...prev, portalId]));
       setStreak(0);
+      return 0;
     }
+  };
 
-    // Return to map screen
-    setScreen('map');
-    setSelectedPortalId(null);
+  const handleAdvancePortalQuestion = (portalId: string, totalQuestions: number) => {
+    setPortalQuestionIndices((prev) => ({
+      ...prev,
+      [portalId]: ((prev[portalId] || 0) + 1) % totalQuestions,
+    }));
   };
 
   // Use Time Warp Power-up
@@ -359,13 +362,17 @@ export default function App() {
       {screen === 'challenge' && currentPortal && (
         <ChallengeModal
           portal={currentPortal}
+          initialQuestionIndex={portalQuestionIndices[currentPortal.id] || 0}
           timeRemaining={timeRemaining}
+          score={score}
           completedCount={completedPortals.length}
           totalPortals={portals.length}
-          onSolveChallenge={handleSolveChallenge}
+          onRecordAnswer={handleRecordAnswer}
+          onAdvanceQuestion={(total) => handleAdvancePortalQuestion(currentPortal.id, total)}
           onBackToMap={() => {
             sound.playClick();
             setScreen('map');
+            setSelectedPortalId(null);
           }}
           onUseHint={handleUseHint}
           hintCount={powerUps.neuralHint}
