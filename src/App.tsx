@@ -220,9 +220,9 @@ export default function App() {
           )}
 
           {activeTab === 'portals' && (
-            <div className="h-screen w-full flex flex-col justify-between bg-[#080808]">
+            <div className="h-screen w-full flex flex-col bg-[#080808] overflow-hidden">
               {/* Header Bar */}
-              <header className="w-full px-6 py-4 flex items-center justify-between border-b border-white/10 bg-[#0e0e13]/80 backdrop-blur-md">
+              <header className="shrink-0 w-full px-6 py-4 flex items-center justify-between border-b border-white/10 bg-[#0e0e13]/80 backdrop-blur-md">
                 <div className="font-['Space_Grotesk',sans-serif] font-bold text-lg text-white">
                   AARUUSH QUEST // PORTALS
                 </div>
@@ -231,15 +231,17 @@ export default function App() {
                 </div>
               </header>
 
-              <PortalsListView
-                portals={portals}
-                completedPortals={completedPortals}
-                failedPortals={failedPortals}
-                onSelectPortal={handleSelectPortal}
-              />
+              <div className="flex-1 min-h-0 overflow-y-auto w-full">
+                <PortalsListView
+                  portals={portals}
+                  completedPortals={completedPortals}
+                  failedPortals={failedPortals}
+                  onSelectPortal={handleSelectPortal}
+                />
+              </div>
 
               {/* Bottom Nav Bar */}
-              <footer className="w-full border-t border-white/10 bg-[#0e0e13]/90 px-4 py-2">
+              <footer className="shrink-0 w-full border-t border-white/10 bg-[#0e0e13]/90 px-4 py-2">
                 <div className="max-w-md mx-auto grid grid-cols-4 gap-1">
                   {(['map', 'portals', 'status', 'inventory'] as const).map((tab) => (
                     <button
@@ -261,9 +263,9 @@ export default function App() {
           )}
 
           {activeTab === 'status' && (
-            <div className="h-screen w-full flex flex-col justify-between bg-[#080808]">
+            <div className="h-screen w-full flex flex-col bg-[#080808] overflow-hidden">
               {/* Header Bar */}
-              <header className="w-full px-6 py-4 flex items-center justify-between border-b border-white/10 bg-[#0e0e13]/80 backdrop-blur-md">
+              <header className="shrink-0 w-full px-6 py-4 flex items-center justify-between border-b border-white/10 bg-[#0e0e13]/80 backdrop-blur-md">
                 <div className="font-['Space_Grotesk',sans-serif] font-bold text-lg text-white">
                   AARUUSH QUEST // LIVE TELEMETRY
                 </div>
@@ -272,18 +274,20 @@ export default function App() {
                 </div>
               </header>
 
-              <StatusView
-                portals={portals}
-                completedPortals={completedPortals}
-                failedPortals={failedPortals}
-                score={score}
-                streak={streak}
-                maxStreak={maxStreak}
-                timeRemaining={timeRemaining}
-              />
+              <div className="flex-1 min-h-0 overflow-y-auto w-full">
+                <StatusView
+                  portals={portals}
+                  completedPortals={completedPortals}
+                  failedPortals={failedPortals}
+                  score={score}
+                  streak={streak}
+                  maxStreak={maxStreak}
+                  timeRemaining={timeRemaining}
+                />
+              </div>
 
               {/* Bottom Nav Bar */}
-              <footer className="w-full border-t border-white/10 bg-[#0e0e13]/90 px-4 py-2">
+              <footer className="shrink-0 w-full border-t border-white/10 bg-[#0e0e13]/90 px-4 py-2">
                 <div className="max-w-md mx-auto grid grid-cols-4 gap-1">
                   {(['map', 'portals', 'status', 'inventory'] as const).map((tab) => (
                     <button
@@ -305,9 +309,9 @@ export default function App() {
           )}
 
           {activeTab === 'inventory' && (
-            <div className="h-screen w-full flex flex-col justify-between bg-[#080808]">
+            <div className="h-screen w-full flex flex-col bg-[#080808] overflow-hidden">
               {/* Header Bar */}
-              <header className="w-full px-6 py-4 flex items-center justify-between border-b border-white/10 bg-[#0e0e13]/80 backdrop-blur-md">
+              <header className="shrink-0 w-full px-6 py-4 flex items-center justify-between border-b border-white/10 bg-[#0e0e13]/80 backdrop-blur-md">
                 <div className="font-['Space_Grotesk',sans-serif] font-bold text-lg text-white">
                   AARUUSH QUEST // INVENTORY
                 </div>
@@ -316,17 +320,19 @@ export default function App() {
                 </div>
               </header>
 
-              <InventoryView
-                portals={portals}
-                completedPortals={completedPortals}
-                powerUps={powerUps}
-                onUseTimeWarp={handleUseTimeWarp}
-                onUseOvercharge={handleUseOvercharge}
-                isOverchargeActive={isOverchargeActive}
-              />
+              <div className="flex-1 min-h-0 overflow-y-auto w-full">
+                <InventoryView
+                  portals={portals}
+                  completedPortals={completedPortals}
+                  powerUps={powerUps}
+                  onUseTimeWarp={handleUseTimeWarp}
+                  onUseOvercharge={handleUseOvercharge}
+                  isOverchargeActive={isOverchargeActive}
+                />
+              </div>
 
               {/* Bottom Nav Bar */}
-              <footer className="w-full border-t border-white/10 bg-[#0e0e13]/90 px-4 py-2">
+              <footer className="shrink-0 w-full border-t border-white/10 bg-[#0e0e13]/90 px-4 py-2">
                 <div className="max-w-md mx-auto grid grid-cols-4 gap-1">
                   {(['map', 'portals', 'status', 'inventory'] as const).map((tab) => (
                     <button

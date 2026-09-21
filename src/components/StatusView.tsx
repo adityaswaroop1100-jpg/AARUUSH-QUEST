@@ -103,29 +103,70 @@ export const StatusView: React.FC<StatusViewProps> = ({
 
       {/* Domain Mastery Breakdown */}
       <div className="glass-panel rounded-xl p-5 border-white/10">
-        <h3 className="font-['Space_Grotesk',sans-serif] font-bold text-base text-white uppercase tracking-wide mb-3 flex items-center gap-2">
-          <Award className="w-4 h-4 text-cyan-400" />
-          Domain Category Penetration
-        </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-white/10">
+          <h3 className="font-['Space_Grotesk',sans-serif] font-bold text-base text-white uppercase tracking-wide flex items-center gap-2">
+            <Award className="w-4 h-4 text-cyan-400" />
+            Domain Penetration & Network Status
+          </h3>
+          <span className="font-mono text-xs text-cyan-300 font-bold bg-cyan-950/80 px-2.5 py-1 rounded border border-cyan-500/30">
+            {completedCount} / {totalPortals} DOMAINS BREACHED ({Math.round((completedCount / totalPortals) * 100)}%)
+          </span>
+        </div>
 
-        <div className="space-y-3 font-mono text-xs">
-          {categories.map((cat) => {
-            const catPortals = portals.filter((p) => p.category === cat);
-            const catCompleted = catPortals.filter((p) => completedPortals.includes(p.id)).length;
-            const pct = Math.round((catCompleted / catPortals.length) * 100);
+        {/* Global Progress Bar */}
+        <div className="w-full h-2 bg-[#1b1b20] rounded-full overflow-hidden border border-white/10 mb-5">
+          <div
+            className="h-full bg-gradient-to-r from-cyan-400 via-teal-400 to-amber-400 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(0,240,255,0.5)]"
+            style={{ width: `${Math.round((completedCount / totalPortals) * 100)}%` }}
+          />
+        </div>
+
+        {/* Domain List Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+          {portals.map((p) => {
+            const isCompleted = completedPortals.includes(p.id);
 
             return (
-              <div key={cat}>
-                <div className="flex justify-between text-white/80 mb-1">
-                  <span>{cat}</span>
-                  <span className="text-cyan-300 font-bold">
-                    {catCompleted}/{catPortals.length} ({pct}%)
+              <div
+                key={p.id}
+                className={`p-3 rounded-lg border transition-all ${
+                  isCompleted
+                    ? 'bg-cyan-950/30 border-cyan-500/40 text-cyan-200'
+                    : 'bg-[#1b1b20]/60 border-white/5 text-white/70'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] font-bold text-cyan-300 shrink-0">
+                      {p.code}
+                    </span>
+                    <span className="font-['Space_Grotesk',sans-serif] font-bold text-sm text-white truncate">
+                      {p.name}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-[10px] font-bold shrink-0 px-2 py-0.5 rounded ${
+                      isCompleted
+                        ? 'bg-green-950 border border-green-500/40 text-green-300'
+                        : 'bg-white/5 text-white/40'
+                    }`}
+                  >
+                    {isCompleted ? '✓ BREACHED' : 'PENDING'}
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-[#1b1b20] rounded-full overflow-hidden border border-white/5">
+
+                <div className="flex justify-between items-center text-[10px] text-white/50 mb-1">
+                  <span className="truncate">{p.category}</span>
+                  <span className={isCompleted ? 'text-green-400 font-bold' : ''}>
+                    {isCompleted ? '1/1 (100%)' : '0/1 (0%)'}
+                  </span>
+                </div>
+
+                <div className="w-full h-1 bg-[#131318] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-amber-400 rounded-full transition-all duration-300"
-                    style={{ width: `${pct}%` }}
+                    className={`h-full rounded-full transition-all duration-300 ${
+                      isCompleted ? 'w-full bg-green-400 shadow-[0_0_6px_#4ade80]' : 'w-0 bg-cyan-500'
+                    }`}
                   />
                 </div>
               </div>
