@@ -438,8 +438,8 @@ export const DomainLogo: React.FC<DomainLogoProps> = ({
       );
     }
 
-    // 15. Mageffici & Entrepreneurial Symposium (Management & Entrepreneurship)
-    if (key.includes('mageffici') || key.includes('entrepreneur') || key.includes('cognition')) {
+    // 15. Magifficie & Entrepreneurial Symposium (Management & Entrepreneurship)
+    if (key.includes('magifficie') || key.includes('mageffici') || key.includes('entrepreneur') || key.includes('cognition')) {
       return (
         <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" strokeWidth="7" />
