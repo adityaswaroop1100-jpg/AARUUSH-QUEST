@@ -10,7 +10,7 @@ interface ChallengeModalProps {
   timeRemaining: number;
   completedCount: number;
   totalPortals: number;
-  onSolveChallenge: (portalId: string, isCorrect: boolean, timeSpentSec: number) => void;
+  onSolveChallenge: (portalId: string, isCorrect: boolean, timeSpentSec: number, pointsEarned?: number) => void;
   onBackToMap: () => void;
   onUseHint: () => boolean;
   hintCount: number;
@@ -35,6 +35,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   const [answeredState, setAnsweredState] = useState<'pending' | 'correct' | 'wrong'>('pending');
   const [showHint, setShowHint] = useState<boolean>(false);
   const [correctCount, setCorrectCount] = useState<number>(0);
+  const [accumulatedPoints, setAccumulatedPoints] = useState<number>(0);
   const startTime = React.useRef(Date.now());
 
   // Format timer MM:SS
@@ -49,17 +50,19 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     
     setSelectedOption(idx);
     const isCorrect = idx === currentChallenge.correctOptionIndex;
+    const qPoints = currentChallenge.basePoints || 10;
 
     if (isCorrect) {
       sound.playCorrect();
       setAnsweredState('correct');
       setCorrectCount(prev => prev + 1);
+      setAccumulatedPoints(prev => prev + qPoints);
     } else {
       sound.playWrong();
       setAnsweredState('wrong');
     }
 
-    // Delay to display visual reward / feedback before continuing or next question
+    // Delay to display visual feedback before next question or concluding portal
     setTimeout(() => {
       if (questionIndex + 1 < questionsList.length) {
         setQuestionIndex(prev => prev + 1);
@@ -67,9 +70,12 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
         setAnsweredState('pending');
         setShowHint(false);
       } else {
-        const timeSpent = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
-        const overallSuccess = isCorrect || correctCount > 0;
-        onSolveChallenge(portal.id, overallSuccess, timeSpent);
+        const totalTimeSpent = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
+        const avgTimePerQuestion = Math.max(1, Math.round(totalTimeSpent / questionsList.length));
+        const finalCorrectCount = isCorrect ? correctCount + 1 : correctCount;
+        const finalPoints = isCorrect ? accumulatedPoints + qPoints : accumulatedPoints;
+        const overallSuccess = finalCorrectCount > 0;
+        onSolveChallenge(portal.id, overallSuccess, avgTimePerQuestion, finalPoints);
       }
     }, 1400);
   };
@@ -82,7 +88,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
         setShowHint(true);
       }
     } else {
-      setShowHint(true);
+      sound.playWrong();
     }
   };
 

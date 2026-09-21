@@ -100,7 +100,7 @@ export default function App() {
   };
 
   // Solve Challenge
-  const handleSolveChallenge = (portalId: string, isCorrect: boolean, timeSpentSec: number) => {
+  const handleSolveChallenge = (portalId: string, isCorrect: boolean, timeSpentSec: number, pointsEarned?: number) => {
     const portal = portals.find((p) => p.id === portalId);
     if (!portal) return;
 
@@ -111,8 +111,10 @@ export default function App() {
         setCompletedPortals((prev) => [...prev, portalId]);
       }
 
-      // Calculate score
-      let earnedPoints = portal.challenge.basePoints;
+      // Calculate score based on actual questions answered correctly
+      let earnedPoints = (pointsEarned !== undefined && pointsEarned > 0)
+        ? pointsEarned
+        : portal.challenge.basePoints;
 
       // Speed bonus
       if (timeSpentSec <= portal.challenge.timeBonusLimitSec) {

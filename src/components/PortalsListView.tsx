@@ -142,7 +142,9 @@ export const PortalsListView: React.FC<PortalsListViewProps> = ({
 
               <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
                 <span className="font-mono text-[10px] text-amber-300 font-semibold">
-                  +{portal.challenge.basePoints} PTS
+                  {portal.challenges && portal.challenges.length > 1
+                    ? `${portal.challenges.length} QUESTIONS • +${portal.challenges.reduce((sum, c) => sum + (c.basePoints || 10), 0)} PTS`
+                    : `+${portal.challenge.basePoints} PTS`}
                 </span>
 
                 <button

@@ -179,11 +179,26 @@ export const ChallengeVisualizer: React.FC<VisualizerProps> = ({ type }) => {
         </div>
       );
 
-    default:
+    case 'cad_blueprint':
       return (
-        <div className="w-full p-3 my-2 bg-[#0e0e13]/60 rounded border border-white/10 text-center font-mono text-xs text-white/70">
-          SYSTEM TELEMETRY SYNCHRONIZED
+        <div className="w-full p-2.5 my-2.5 bg-[#0e0e13]/80 rounded-lg border border-cyan-500/20 font-mono text-xs">
+          <div className="flex items-center justify-between text-[10px] text-cyan-300 mb-1 border-b border-cyan-500/20 pb-1">
+            <span>SCHEMATIC // SCALE 1:50</span>
+            <span className="text-amber-400">PLANAR ELEVATION</span>
+          </div>
+          <div className="h-12 w-full rounded bg-[#131318] border border-dashed border-cyan-500/30 flex items-center justify-around relative overflow-hidden">
+            <div className="w-5 h-8 border-2 border-cyan-400/80 bg-cyan-950/40 flex items-center justify-center text-[8px] text-cyan-200 font-bold">
+              COL 1
+            </div>
+            <div className="h-1.5 w-24 bg-cyan-400/80 rounded" />
+            <div className="w-5 h-8 border-2 border-cyan-400/80 bg-cyan-950/40 flex items-center justify-center text-[8px] text-cyan-200 font-bold">
+              COL 2
+            </div>
+          </div>
         </div>
       );
+
+    default:
+      return null;
   }
 };
