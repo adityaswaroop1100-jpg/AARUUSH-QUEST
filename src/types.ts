@@ -59,6 +59,7 @@ export interface DomainPortal {
   y: number; // 0 to 100 percentage on grid map
   connections: string[]; // Connected portal IDs
   challenge: MicroChallenge;
+  challenges?: MicroChallenge[];
   rewardArtifact?: {
     name: string;
     icon: string;

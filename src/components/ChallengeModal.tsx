@@ -26,9 +26,15 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   onUseHint,
   hintCount,
 }) => {
+  const questionsList = (portal.challenges && portal.challenges.length > 0)
+    ? portal.challenges
+    : [portal.challenge];
+
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [answeredState, setAnsweredState] = useState<'pending' | 'correct' | 'wrong'>('pending');
   const [showHint, setShowHint] = useState<boolean>(false);
+  const [correctCount, setCorrectCount] = useState<number>(0);
   const startTime = React.useRef(Date.now());
 
   // Format timer MM:SS
@@ -36,27 +42,36 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   const seconds = timeRemaining % 60;
   const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-  const { challenge } = portal;
+  const currentChallenge = questionsList[questionIndex] || portal.challenge;
 
   const handleSelectOption = (idx: number) => {
     if (answeredState !== 'pending') return;
     
     setSelectedOption(idx);
-    const timeSpent = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
-    const isCorrect = idx === challenge.correctOptionIndex;
+    const isCorrect = idx === currentChallenge.correctOptionIndex;
 
     if (isCorrect) {
       sound.playCorrect();
       setAnsweredState('correct');
+      setCorrectCount(prev => prev + 1);
     } else {
       sound.playWrong();
       setAnsweredState('wrong');
     }
 
-    // Short delay to display visual reward / feedback before continuing
+    // Delay to display visual reward / feedback before continuing or next question
     setTimeout(() => {
-      onSolveChallenge(portal.id, isCorrect, timeSpent);
-    }, 1800);
+      if (questionIndex + 1 < questionsList.length) {
+        setQuestionIndex(prev => prev + 1);
+        setSelectedOption(null);
+        setAnsweredState('pending');
+        setShowHint(false);
+      } else {
+        const timeSpent = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
+        const overallSuccess = isCorrect || correctCount > 0;
+        onSolveChallenge(portal.id, overallSuccess, timeSpent);
+      }
+    }, 1400);
   };
 
   const handleHintClick = () => {
@@ -128,11 +143,17 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
         <div className="glass-panel rounded-2xl p-6 md:p-8 border-t-2 border-t-[#00f0ff] shadow-2xl relative">
           
           {/* Tag Header */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-cyan-950/80 border border-cyan-500/40 text-[#00f0ff] font-mono text-[11px] font-bold tracking-widest uppercase shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              🧠 {challenge.category}
+              🧠 {currentChallenge.category}
             </div>
+
+            {questionsList.length > 1 && (
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/5 border border-cyan-500/30 text-cyan-300 font-mono text-[11px] font-bold tracking-wider">
+                <span>QUESTION {questionIndex + 1} OF {questionsList.length}</span>
+              </div>
+            )}
 
             <button
               onClick={handleHintClick}
@@ -144,6 +165,24 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             </button>
           </div>
 
+          {/* Question Step Indicators if multiple */}
+          {questionsList.length > 1 && (
+            <div className="w-full flex gap-1.5 mb-3">
+              {questionsList.map((_, qIdx) => (
+                <div
+                  key={qIdx}
+                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                    qIdx < questionIndex
+                      ? 'bg-green-400'
+                      : qIdx === questionIndex
+                      ? 'bg-cyan-400 shadow-[0_0_8px_#00f0ff]'
+                      : 'bg-white/10'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
           {/* Domain Official Emblem */}
           <div className="flex justify-center mb-3">
             <div className="p-3 rounded-2xl bg-[#131318]/90 border border-cyan-500/40 text-cyan-300 shadow-[0_0_20px_rgba(0,240,255,0.25)] flex items-center justify-center">
@@ -153,39 +192,39 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
 
           {/* Title */}
           <h2 className="font-['Space_Grotesk',sans-serif] text-2xl md:text-3xl font-bold uppercase tracking-wide text-white text-center mb-2">
-            {challenge.title}
+            {currentChallenge.title}
           </h2>
 
           {/* Description */}
-          <p className="text-white/80 text-sm md:text-base text-center font-normal leading-relaxed mb-3">
-            {challenge.description}
+          <p className="text-white/90 text-sm md:text-base text-center font-medium leading-relaxed mb-3">
+            {currentChallenge.description}
           </p>
 
           {/* Context Instructions */}
-          {challenge.instructions && (
+          {currentChallenge.instructions && (
             <div className="text-center font-mono text-xs text-cyan-200/90 bg-cyan-950/30 py-1.5 px-3 rounded border border-cyan-500/20 mb-3">
-              {challenge.instructions}
+              {currentChallenge.instructions}
             </div>
           )}
 
           {/* Interactive Visualizer */}
-          <ChallengeVisualizer type={challenge.visualType} title={challenge.title} />
+          <ChallengeVisualizer type={currentChallenge.visualType} title={currentChallenge.title} />
 
           {/* Hint Overlay if opened */}
           {showHint && (
             <div className="mb-4 p-3 bg-amber-950/60 border border-amber-500/40 rounded-lg text-amber-200 font-mono text-xs flex items-start gap-2 animate-fade-in">
               <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <strong>NEURAL HINT:</strong> {challenge.hint}
+                <strong>NEURAL HINT:</strong> {currentChallenge.hint}
               </div>
             </div>
           )}
 
           {/* Options List */}
           <div className="flex flex-col gap-3 my-4">
-            {challenge.options.map((opt, idx) => {
+            {currentChallenge.options.map((opt, idx) => {
               const isSelected = selectedOption === idx;
-              const isCorrectOpt = idx === challenge.correctOptionIndex;
+              const isCorrectOpt = idx === currentChallenge.correctOptionIndex;
 
               let btnStyle = 'border-white/15 bg-[#1b1b20]/90 text-white hover:border-cyan-400 hover:bg-[#25252d]';
               
@@ -253,7 +292,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
                 {answeredState === 'correct' ? '✅ PORTAL BREACH SUCCESSFUL! (+POINTS)' : '⚠️ CIPHER ERROR // DATA LOGGED'}
               </div>
               <p className="text-white/80 text-[11px] leading-relaxed">
-                {challenge.explanation}
+                {currentChallenge.explanation}
               </p>
             </div>
           )}
