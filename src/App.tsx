@@ -11,6 +11,7 @@ import { InventoryView } from './components/InventoryView';
 import { FestivalScheduleModal } from './components/FestivalScheduleModal';
 import { sound } from './utils/audio';
 import { ParticipantFormData, registerParticipant, updateParticipantFinalScore, getStoredParticipant } from './utils/supabase/participants';
+import { ParticipantLoginPage } from './components/ParticipantLoginPage';
 
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>('welcome');
@@ -341,8 +342,25 @@ export default function App() {
         <WelcomeScreen
           onStartQuest={handleStartQuest}
           onOpenSchedule={() => setShowScheduleModal(true)}
+          onOpenLogin={() => setScreen('login')}
+          participant={currentParticipant}
           soundEnabled={soundEnabled}
           onToggleSound={handleToggleSound}
+        />
+      )}
+
+      {/* 1b. Dedicated 5-Component Participant Login Screen */}
+      {screen === 'login' && (
+        <ParticipantLoginPage
+          currentParticipant={currentParticipant}
+          onStartQuest={(data) => {
+            handleStartQuest(data);
+          }}
+          onBackToWelcome={() => {
+            const updated = getStoredParticipant();
+            if (updated) setCurrentParticipant(updated);
+            setScreen('welcome');
+          }}
         />
       )}
 

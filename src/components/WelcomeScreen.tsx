@@ -1,5 +1,5 @@
 import React from 'react';
-import { Timer, Flag, Rocket, Volume2, VolumeX, Info, Calendar } from 'lucide-react';
+import { Timer, Flag, Rocket, Volume2, VolumeX, Info, Calendar, User } from 'lucide-react';
 import { sound } from '../utils/audio';
 import { ParticipantModal } from './ParticipantModal';
 import { ParticipantFormData } from '../utils/supabase/participants';
@@ -7,6 +7,8 @@ import { ParticipantFormData } from '../utils/supabase/participants';
 interface WelcomeScreenProps {
   onStartQuest: (participant: ParticipantFormData) => void;
   onOpenSchedule: () => void;
+  onOpenLogin: () => void;
+  participant?: ParticipantFormData | null;
   soundEnabled: boolean;
   onToggleSound: () => void;
 }
@@ -14,6 +16,8 @@ interface WelcomeScreenProps {
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onStartQuest,
   onOpenSchedule,
+  onOpenLogin,
+  participant,
   soundEnabled,
   onToggleSound,
 }) => {
@@ -22,7 +26,11 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
   const handleStart = () => {
     sound.playSelect();
-    setShowParticipantModal(true);
+    if (participant) {
+      onStartQuest(participant);
+    } else {
+      setShowParticipantModal(true);
+    }
   };
 
   const handleParticipantSubmit = (data: ParticipantFormData) => {
@@ -58,6 +66,19 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              sound.playClick();
+              onOpenLogin();
+            }}
+            className="p-2 rounded-full bg-[#0c0c14]/80 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 hover:text-white transition-all text-xs flex items-center gap-1.5 px-3.5 backdrop-blur-md cursor-pointer shadow-[0_0_12px_rgba(0,240,255,0.25)]"
+            title="Participant Clearance"
+          >
+            <User className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="font-['Rajdhani',sans-serif] font-bold tracking-wider text-sm">
+              {participant ? participant.name.split(' ')[0].toUpperCase() : 'ENTER DETAILS'}
+            </span>
+          </button>
           <button
             onClick={() => {
               sound.playClick();
@@ -205,14 +226,46 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             </div>
           </div>
 
-          {/* Call to Action Button */}
-          <div className="w-full max-w-md">
+          {/* Call to Action Buttons */}
+          <div className="w-full max-w-md flex flex-col gap-3">
+            {participant && (
+              <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#0c0c14]/90 border border-cyan-500/40 text-xs font-mono text-cyan-300 shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                <span className="flex items-center gap-2 truncate">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-white/60 uppercase">AUTHENTICATED:</span>
+                  <strong className="text-white truncate">{participant.name}</strong>
+                  <span className="text-amber-400 font-bold shrink-0">({participant.participant_id})</span>
+                </span>
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    onOpenLogin();
+                  }}
+                  className="text-cyan-400 hover:text-cyan-300 underline font-bold text-xs ml-2 shrink-0 cursor-pointer"
+                >
+                  EDIT
+                </button>
+              </div>
+            )}
+
             <button
               onClick={handleStart}
               className="w-full font-['Orbitron',sans-serif] text-[16px] md:text-[18px] uppercase tracking-widest bg-gradient-to-r from-[#00f0ff] via-[#7df4ff] to-[#00d0e0] text-[#00282c] px-8 py-5 md:py-5.5 shadow-[0_0_25px_rgba(0,240,255,0.6)] hover:shadow-[0_0_40px_rgba(0,240,255,0.9)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 group rounded-xl font-black cursor-pointer border border-cyan-200/50"
             >
               <span>START QUEST</span>
               <Rocket className="w-5 h-5 md:w-6 md:h-6 text-[#00282c] group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
+
+            {/* Explicit Enter Participant Details Button */}
+            <button
+              onClick={() => {
+                sound.playClick();
+                onOpenLogin();
+              }}
+              className="w-full font-['Rajdhani',sans-serif] text-[15px] md:text-[16px] font-bold uppercase tracking-wider bg-[#0c0c14]/85 hover:bg-[#151522] text-cyan-300 hover:text-white px-5 py-3.5 rounded-xl border border-cyan-500/35 hover:border-cyan-400 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+            >
+              <User className="w-4 h-4 text-cyan-400" />
+              <span>{participant ? 'CHANGE PARTICIPANT DETAILS (5 COMPONENTS)' : 'ENTER PARTICIPANT DETAILS (5 COMPONENTS)'}</span>
             </button>
           </div>
         </div>

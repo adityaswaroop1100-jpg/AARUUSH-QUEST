@@ -1,4 +1,4 @@
-export type AppScreen = 'welcome' | 'map' | 'challenge' | 'completed';
+export type AppScreen = 'welcome' | 'login' | 'map' | 'challenge' | 'completed';
 export type AppTab = 'map' | 'portals' | 'status' | 'inventory';
 
 export type PortalStatus = 'available' | 'completed' | 'failed' | 'locked';
