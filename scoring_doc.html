@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AARUUSH QUEST - Official Scoring & Point Distribution Scheme</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm 10mm 12mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #09090d;
+      color: #e2e8f0;
+      font-size: 9.5pt;
+      line-height: 1.35;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    /* Header */
+    .header {
+      border-bottom: 2px solid #00f0ff;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .title-group h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 21pt;
+      font-weight: 700;
+      margin: 0 0 2px 0;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+    }
+
+    .title-group h1 span {
+      color: #00f0ff;
+    }
+
+    .title-group .sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5pt;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .badge-box {
+      text-align: right;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-box .bound-pill {
+      display: inline-block;
+      background: #1e1b4b;
+      border: 1px solid #6366f1;
+      color: #a5b4fc;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .badge-box .meta {
+      font-size: 7pt;
+      color: #64748b;
+    }
+
+    /* Section Styles */
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11pt;
+      font-weight: 700;
+      color: #38bdf8;
+      margin: 10px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    h2::before {
+      content: "";
+      display: inline-block;
+      width: 3.5px;
+      height: 12px;
+      background: #00f0ff;
+      border-radius: 2px;
+    }
+
+    /* Key Summary Cards */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .sum-card {
+      background: #13141f;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      text-align: center;
+    }
+
+    .sum-card .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 6.8pt;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 1px;
+    }
+
+    .sum-card .val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.5pt;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .sum-card.min .val { color: #f59e0b; }
+    .sum-card.max .val { color: #10b981; }
+    .sum-card.q .val { color: #00f0ff; }
+    .sum-card.dom .val { color: #a78bfa; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+      font-size: 8.5pt;
+      background: #11121a;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+
+    thead th {
+      background: #181926;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.2pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+
+    tbody td {
+      padding: 4.5px 8px;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #141522;
+    }
+
+    .tag-pts {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      padding: 1.5px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      font-size: 7.5pt;
+    }
+
+    .pts-gold { background: #3b2a00; color: #fbbf24; border: 1px solid #78350f; }
+    .pts-green { background: #064e3b; color: #34d399; border: 1px solid #047857; }
+    .pts-blue { background: #0c4a6e; color: #38bdf8; border: 1px solid #0284c7; }
+    .pts-purple { background: #3b0764; color: #c084fc; border: 1px solid #6b21a8; }
+    .pts-muted { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+
+    .note-text {
+      color: #94a3b8;
+      font-size: 7.5pt;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid #1e293b;
+      padding-top: 6px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7pt;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="title-group">
+        <h1>AARUUSH <span>QUEST</span></h1>
+        <div class="sub">Official Scoring & Point Distribution Specification // SRMIST</div>
+      </div>
+      <div class="badge-box">
+        <div class="bound-pill">SCORE RANGE: 50 MIN – 250 MAX</div>
+        <div class="meta">Aaruush Fest 2026 • 17 Domains • 85 MCQs</div>
+      </div>
+    </div>
+
+    <!-- Summary Numbers Grid -->
+    <div class="summary-grid">
+      <div class="sum-card min">
+        <div class="label">Minimum Guaranteed</div>
+        <div class="val">50 PTS</div>
+      </div>
+      <div class="sum-card max">
+        <div class="label">Maximum Cap</div>
+        <div class="val">250 PTS</div>
+      </div>
+      <div class="sum-card q">
+        <div class="label">Per Question Base</div>
+        <div class="val">2 PTS</div>
+      </div>
+      <div class="sum-card dom">
+        <div class="label">Total Challenges</div>
+        <div class="val">85 MCQs</div>
+      </div>
+    </div>
+
+    <!-- Table 1: Rules -->
+    <h2>1. Point Distribution & Multiplier Scheme</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scoring Category</th>
+          <th style="width: 100px;">Points</th>
+          <th>Requirement / Rule</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Participation Base (Initiation Grant)</strong></td>
+          <td><span class="tag-pts pts-gold">50 PTS</span></td>
+          <td>Guaranteed baseline for all participants upon entering the grid quest.</td>
+        </tr>
+        <tr>
+          <td><strong>Standard MCQ Correct Answer</strong></td>
+          <td><span class="tag-pts pts-blue">+2 PTS</span></td>
+          <td>Awarded on every correct answer. 5 questions per domain × 2 pts = 10 pts/domain.</td>
+        </tr>
+        <tr>
+          <td><strong>Speed Efficiency Bonus</strong></td>
+          <td><span class="tag-pts pts-green">+1 PT</span></td>
+          <td>Earned if question is solved within the 10-second timer window.</td>
+        </tr>
+        <tr>
+          <td><strong>Streak Continuity Bonus</strong></td>
+          <td><span class="tag-pts pts-purple">+1 PT</span></td>
+          <td>Awarded on consecutive correct answers (Active Streak &ge; 2).</td>
+        </tr>
+        <tr>
+          <td><strong>Domain Mastery Clearance</strong></td>
+          <td><span class="tag-pts pts-gold">+1 PT</span></td>
+          <td>Awarded when all 5 questions in a domain portal are solved.</td>
+        </tr>
+        <tr>
+          <td><strong>Incorrect / Failed Answer</strong></td>
+          <td><span class="tag-pts pts-muted">0 PTS</span></td>
+          <td>No negative penalty. Streak multiplier resets to 0.</td>
+        </tr>
+        <tr>
+          <td><strong>Replay Mode (Already Solved)</strong></td>
+          <td><span class="tag-pts pts-muted">0 PTS</span></td>
+          <td>Anti-farming protection: Re-entering a solved portal awards no duplicate marks.</td>
+        </tr>
+        <tr>
+          <td><strong>Absolute Maximum Cap</strong></td>
+          <td><span class="tag-pts pts-green">250 PTS</span></td>
+          <td>Total quest score cannot exceed 250 PTS under any combination of multipliers.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Table 2: Single Question Scenarios -->
+    <h2>2. Single Question Points Example</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Player Performance Scenario</th>
+          <th style="text-align: center; width: 50px;">Base</th>
+          <th style="text-align: center; width: 50px;">Speed</th>
+          <th style="text-align: center; width: 50px;">Streak</th>
+          <th style="text-align: center; width: 80px;">Total Added</th>
+          <th>Player Experience Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Standard Correct Answer</strong></td>
+          <td style="text-align: center;">+2</td>
+          <td style="text-align: center;">0</td>
+          <td style="text-align: center;">0</td>
+          <td style="text-align: center;"><span class="tag-pts pts-blue">+2 PTS</span></td>
+          <td class="note-text">Answered outside 10s or 1st question in sequence.</td>
+        </tr>
+        <tr>
+          <td><strong>Fast Answer (&le; 10s)</strong></td>
+          <td style="text-align: center;">+2</td>
+          <td style="text-align: center;">+1</td>
+          <td style="text-align: center;">0</td>
+          <td style="text-align: center;"><span class="tag-pts pts-green">+3 PTS</span></td>
+          <td class="note-text">Quick solve rewarded with speed bonus.</td>
+        </tr>
+        <tr>
+          <td><strong>Fast Answer + Active Streak</strong></td>
+          <td style="text-align: center;">+2</td>
+          <td style="text-align: center;">+1</td>
+          <td style="text-align: center;">+1</td>
+          <td style="text-align: center;"><span class="tag-pts pts-gold">+4 PTS</span></td>
+          <td class="note-text">Optimal solve: Base + Speed Bonus + Streak Bonus.</td>
+        </tr>
+        <tr>
+          <td><strong>Incorrect Answer</strong></td>
+          <td style="text-align: center;">0</td>
+          <td style="text-align: center;">0</td>
+          <td style="text-align: center;">0</td>
+          <td style="text-align: center;"><span class="tag-pts pts-muted">0 PTS</span></td>
+          <td class="note-text">No point deduction; resets active streak to 0.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Table 3: Ranks and Percentiles -->
+    <h2>3. Final Ranks, Percentiles & Tier Thresholds</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Score Range</th>
+          <th>Rank Title</th>
+          <th>Tier Status</th>
+          <th>Percentile</th>
+          <th>Competency Recognition</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>220 – 250 PTS</strong></td>
+          <td><strong style="color: #fbbf24;">AARUUSH CHAMPION</strong></td>
+          <td>Champion Tier</td>
+          <td>Top 5%</td>
+          <td>Flawless execution across multiple technical disciplines.</td>
+        </tr>
+        <tr>
+          <td><strong>170 – 219 PTS</strong></td>
+          <td><strong style="color: #38bdf8;">CYBER PRODIGY</strong></td>
+          <td>Prodigy Tier</td>
+          <td>Top 15%</td>
+          <td>High technical velocity with strong multi-domain penetration.</td>
+        </tr>
+        <tr>
+          <td><strong>110 – 169 PTS</strong></td>
+          <td><strong style="color: #c084fc;">GRID TACTICIAN</strong></td>
+          <td>Tactician Tier</td>
+          <td>Top 35%</td>
+          <td>Consistent problem-solving and domain completion.</td>
+        </tr>
+        <tr>
+          <td><strong>50 – 109 PTS</strong></td>
+          <td><strong style="color: #94a3b8;">TECH INITIATE</strong></td>
+          <td>Initiate Tier</td>
+          <td>Participant</td>
+          <td>Grid entrant exploration and participation foundation.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span>AARUUSH 2026 • SRM INSTITUTE OF SCIENCE & TECHNOLOGY</span>
+      <span>VERIFIED COMPLIANT WITH 50 MIN / 250 MAX POINTING FORMAT</span>
+    </div>
+  </div>
+</body>
+</html>
