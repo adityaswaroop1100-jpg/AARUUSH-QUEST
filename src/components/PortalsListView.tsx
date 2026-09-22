@@ -150,8 +150,8 @@ export const PortalsListView: React.FC<PortalsListViewProps> = ({
               <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
                 <span className="font-mono text-[10px] text-amber-300 font-semibold">
                   {domainSolved.length > 0 && !isCompleted
-                    ? `SOLVED ${domainSolved.length}/${totalQuestions} • +${totalQuestions * 20} PTS`
-                    : `${totalQuestions} QUESTIONS • +${totalQuestions * 20} PTS`}
+                    ? `SOLVED ${domainSolved.length}/${totalQuestions} • +${totalQuestions * 2} PTS`
+                    : `${totalQuestions} QUESTIONS • +${totalQuestions * 2} PTS`}
                 </span>
 
                 <button

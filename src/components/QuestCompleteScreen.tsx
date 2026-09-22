@@ -31,22 +31,22 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
   }, []);
 
   const getRank = () => {
-    if (score >= 1400 || completedCount >= 17) return 'AARUUSH CHAMPION';
-    if (score >= 1000 || completedCount >= 12) return 'CYBER PRODIGY';
-    if (score >= 600 || completedCount >= 7) return 'GRID TACTICIAN';
+    if (score >= 220 || completedCount >= 17) return 'AARUUSH CHAMPION';
+    if (score >= 170 || completedCount >= 12) return 'CYBER PRODIGY';
+    if (score >= 110 || completedCount >= 7) return 'GRID TACTICIAN';
     return 'TECH INITIATE';
   };
 
   const getPercentile = () => {
-    if (score >= 1400 || completedCount >= 17) return 'Global Top 5% • Master Tier';
-    if (score >= 1000 || completedCount >= 12) return 'Global Top 15% • Elite Tier';
-    if (score >= 600 || completedCount >= 7) return 'Global Top 35% • Specialist Tier';
-    return 'Grid Participant';
+    if (score >= 220 || completedCount >= 17) return 'Global Top 5% • Champion Tier';
+    if (score >= 170 || completedCount >= 12) return 'Global Top 15% • Prodigy Tier';
+    if (score >= 110 || completedCount >= 7) return 'Global Top 35% • Tactician Tier';
+    return 'Grid Participant • Initiate Tier';
   };
 
   const handleShare = () => {
     sound.playSelect();
-    const shareText = `⚡ I just conquered AARUUSH QUEST with ${score} PTS (${completedCount}/${totalPortals} domains secured, ${totalSolvedQuestions}/${totalQuestions} MCQs solved)! Rank: ${getRank()} 🏆 #Aaruush2026 #SRMIST`;
+    const shareText = `⚡ I just conquered AARUUSH QUEST with ${score}/250 PTS (${completedCount}/${totalPortals} domains secured, ${totalSolvedQuestions}/${totalQuestions} MCQs solved)! Rank: ${getRank()} 🏆 #Aaruush2026 #SRMIST`;
     
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText);
@@ -105,8 +105,9 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
             <span>TOTAL SCORE</span>
             <RotateCcw className="w-3.5 h-3.5 text-white/40" />
           </div>
-          <div className="font-['Space_Grotesk',sans-serif] text-3xl md:text-4xl font-bold text-white tracking-tight">
-            {score} PTS
+          <div className="font-['Space_Grotesk',sans-serif] text-3xl md:text-4xl font-bold text-white tracking-tight flex items-baseline gap-2">
+            <span>{score}</span>
+            <span className="text-white/40 text-lg font-mono">/ 250 PTS</span>
           </div>
           <div className="font-mono text-xs text-white/50 mt-1 flex items-center justify-between">
             <span>{getPercentile()}</span>

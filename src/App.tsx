@@ -16,10 +16,12 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<AppTab>('map');
   const [selectedPortalId, setSelectedPortalId] = useState<string | null>(null);
   
-  // Quest state
+  // Quest state (Calibrated for Min: 50 PTS, Max: 250 PTS)
+  const MIN_SCORE = 50;
+  const MAX_SCORE = 250;
   const [timeRemaining, setTimeRemaining] = useState<number>(180); // 3 minutes = 180s
   const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
+  const [score, setScore] = useState<number>(MIN_SCORE);
   const [completedPortals, setCompletedPortals] = useState<string[]>([]);
   const [failedPortals, setFailedPortals] = useState<string[]>([]);
   const [solvedQuestions, setSolvedQuestions] = useState<Record<string, number[]>>({});
@@ -79,7 +81,7 @@ export default function App() {
   // Start Quest
   const handleStartQuest = () => {
     setTimeRemaining(180);
-    setScore(0);
+    setScore(MIN_SCORE);
     setCompletedPortals([]);
     setFailedPortals([]);
     setSolvedQuestions({});
@@ -117,13 +119,13 @@ export default function App() {
     setScreen('challenge');
   };
 
-  // Real-time answer recording with anti-exploit verification & transparent marks breakdown
+  // Real-time answer recording with anti-exploit verification & calibrated [50, 250] scoring
   const handleRecordAnswer = (
     portalId: string,
     questionIndex: number,
     isCorrect: boolean,
     timeSpentSec: number,
-    basePoints: number = 20
+    basePoints: number = 2
   ): AnswerRecordResult => {
     const portal = portals.find((p) => p.id === portalId);
     if (!portal) {
@@ -186,17 +188,17 @@ export default function App() {
       };
     }
 
-    // Standardized Marks Breakdown:
-    // Base marks: 20 pts per question
-    const earnedBase = basePoints > 0 ? basePoints : 20;
+    // Standardized Marks Breakdown calibrated for [50, 250]:
+    // Base marks: 2 pts per question (85 questions = 170 base pts)
+    const earnedBase = basePoints > 0 ? basePoints : 2;
 
-    // Speed bonus: +5 pts if answered within timeBonusLimitSec (10s)
+    // Speed bonus: +1 pt if answered within timeBonusLimitSec (10s)
     const timeLimit = questionsList[questionIndex]?.timeBonusLimitSec || 10;
-    const speedBonus = timeSpentSec <= timeLimit ? 5 : 0;
+    const speedBonus = timeSpentSec <= timeLimit ? 1 : 0;
 
-    // Streak bonus: +2 pts per consecutive streak tier (max +10 pts)
+    // Streak bonus: +1 pt if streak >= 2
     const nextStreak = streak + 1;
-    const streakBonus = Math.min(10, nextStreak * 2);
+    const streakBonus = nextStreak >= 2 ? 1 : 0;
 
     let questionPoints = earnedBase + speedBonus + streakBonus;
 
@@ -218,7 +220,7 @@ export default function App() {
     let domainClearBonus = 0;
 
     if (isDomainMastered && !completedPortals.includes(portalId)) {
-      domainClearBonus = 25; // +25 pts Domain Mastery Clearance Bonus
+      domainClearBonus = 1; // +1 pt Domain Mastery Clearance Bonus
       setCompletedPortals((prev) => {
         if (prev.includes(portalId)) return prev;
         const updated = [...prev, portalId];
@@ -234,7 +236,8 @@ export default function App() {
 
     const totalEarnedThis = questionPoints + domainClearBonus;
 
-    setScore((prev) => prev + totalEarnedThis);
+    // Strictly enforce minimum 50 and maximum 250
+    setScore((prev) => Math.min(MAX_SCORE, Math.max(MIN_SCORE, prev + totalEarnedThis)));
     setStreak(nextStreak);
     setMaxStreak((prevMax) => Math.max(prevMax, nextStreak));
 

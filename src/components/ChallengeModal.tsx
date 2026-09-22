@@ -70,7 +70,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     
     setSelectedOption(idx);
     const isCorrect = idx === currentChallenge.correctOptionIndex;
-    const qPoints = currentChallenge.basePoints || 20;
+    const qPoints = currentChallenge.basePoints || 2;
     const timeSpentSec = Math.max(1, Math.round((Date.now() - startTime.current) / 1000));
 
     if (isCorrect) {
@@ -192,7 +192,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#1b1b20]/90 border border-amber-500/40 font-mono font-bold text-amber-300 text-xs shadow-[0_0_10px_rgba(245,158,11,0.15)]">
             <Trophy className="w-3.5 h-3.5 text-amber-400" />
-            <span>{score} PTS</span>
+            <span>{score} / 250 PTS</span>
           </div>
           <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-[#1b1b20]/90 border border-cyan-500/30 font-mono text-cyan-300 text-xs">
             <span>BREACHED: {completedCount}/{totalPortals}</span>

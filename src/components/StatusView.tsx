@@ -34,13 +34,13 @@ export const StatusView: React.FC<StatusViewProps> = ({
   // Categories
   const categories = Array.from(new Set(portals.map((p) => p.category)));
 
-  // Calibrated live leaderboards of Aaruush Fest matching 1700+ point scale
+  // Calibrated live leaderboards of Aaruush Fest matching 50 - 250 point scale
   const leaderboard = [
-    { rank: 1, team: 'SYNAPSE_9 (IIT M)', score: 1480, time: '2:15' },
+    { rank: 1, team: 'SYNAPSE_9 (IIT M)', score: 238, time: '2:15' },
     { rank: 2, team: 'YOU (LIVE QUEST)', score: score, time: `${Math.floor(timeElapsed / 60)}:${String(timeElapsed % 60).padStart(2, '0')}`, isUser: true },
-    { rank: 3, team: 'CYBER_VORTEX (BITS)', score: 1220, time: '2:40' },
-    { rank: 4, team: 'AERO_KINETIX (SRM)', score: 1050, time: '2:50' },
-    { rank: 5, team: 'QUANTUM_VOID (NIT T)', score: 890, time: '2:55' },
+    { rank: 3, team: 'CYBER_VORTEX (BITS)', score: 215, time: '2:40' },
+    { rank: 4, team: 'AERO_KINETIX (SRM)', score: 185, time: '2:50' },
+    { rank: 5, team: 'QUANTUM_VOID (NIT T)', score: 140, time: '2:55' },
   ].sort((a, b) => b.score - a.score).map((entry, idx) => ({ ...entry, rank: idx + 1 }));
 
   return (
@@ -63,9 +63,9 @@ export const StatusView: React.FC<StatusViewProps> = ({
             <Trophy className="w-3.5 h-3.5 text-amber-400" />
           </div>
           <div className="font-['Space_Grotesk',sans-serif] text-2xl md:text-3xl font-bold text-amber-300">
-            {score}
+            {score} <span className="text-sm text-white/40 font-mono">/ 250</span>
           </div>
-          <div className="text-[10px] font-mono text-white/50 mt-1">PTS ACCUMULATED</div>
+          <div className="text-[10px] font-mono text-white/50 mt-1">SCALE: 50 MIN • 250 MAX</div>
         </div>
 
         {/* Streak Card */}

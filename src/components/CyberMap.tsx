@@ -68,7 +68,7 @@ export const CyberMap: React.FC<CyberMapProps> = ({
               SRM INSTITUTE OF SCIENCE & TECH
             </div>
             <div className="font-mono text-[11px] text-white/50">
-              SCORE: <span className="text-amber-300 font-bold">{score}</span>
+              SCORE: <span className="text-amber-300 font-bold">{score} / 250</span>
             </div>
           </div>
         </div>
@@ -284,7 +284,7 @@ export const CyberMap: React.FC<CyberMapProps> = ({
                   {selectedPortal.name}
                 </h3>
                 <p className="text-white/70 text-xs line-clamp-1 font-mono">
-                  {(selectedPortal.challenges?.length || 5)} MCQs • +{(selectedPortal.challenges?.length || 5) * 20} Base Marks
+                  {(selectedPortal.challenges?.length || 5)} MCQs • +{(selectedPortal.challenges?.length || 5) * 2} Base Marks (Max 250 Cap)
                 </p>
               </div>
             </div>
