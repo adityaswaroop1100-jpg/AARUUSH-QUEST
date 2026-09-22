@@ -79,9 +79,69 @@ export async function registerParticipant(data: ParticipantFormData): Promise<{ 
 }
 
 /**
- * Update the participant's final score, solved domains, and rank in Supabase
+ * Update the participant's score, solved domains, and rank in Supabase in real-time
  */
-export async function updateParticipantFinalScore(
+export async function updateParticipantLiveScore(
+  recordId: string | null,
+  participant: ParticipantFormData | null,
+  scoreData: {
+    score: number;
+    completedPortals: number;
+    totalSolvedQuestions: number;
+    timeSpentSec: number;
+    rank?: string;
+  }
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const idToUse = recordId || localStorage.getItem(LOCAL_STORAGE_ID_KEY);
+
+    const updatePayload: Record<string, any> = {
+      score: scoreData.score,
+      completed_portals: scoreData.completedPortals,
+      total_solved_questions: scoreData.totalSolvedQuestions,
+      time_spent_seconds: scoreData.timeSpentSec,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (scoreData.rank) {
+      updatePayload.rank = scoreData.rank;
+    }
+
+    // 1. Primary: update by Supabase row UUID
+    if (idToUse) {
+      const { error } = await supabase
+        .from('participants')
+        .update(updatePayload)
+        .eq('id', idToUse);
+
+      if (!error) return { success: true };
+      console.warn('Update by ID warning:', error.message);
+    }
+
+    // 2. Fallback: update by registration_number and participant_id
+    if (participant?.registration_number && participant?.participant_id) {
+      const { error: fallbackError } = await supabase
+        .from('participants')
+        .update(updatePayload)
+        .eq('registration_number', participant.registration_number.trim().toUpperCase())
+        .eq('participant_id', participant.participant_id.trim().toUpperCase());
+
+      if (!fallbackError) return { success: true };
+      console.warn('Fallback update notice:', fallbackError.message);
+      return { success: false, error: fallbackError.message };
+    }
+
+    return { success: false, error: 'No identifier available for update' };
+  } catch (err: any) {
+    console.warn('Error saving live score to database:', err);
+    return { success: false, error: err?.message };
+  }
+}
+
+/**
+ * Backwards-compatible wrapper for final score update
+ */
+export const updateParticipantFinalScore = (
   participant: ParticipantFormData,
   scoreData: {
     score: number;
@@ -90,45 +150,4 @@ export async function updateParticipantFinalScore(
     timeSpentSec: number;
     rank: string;
   }
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    const recordId = localStorage.getItem(LOCAL_STORAGE_ID_KEY);
-
-    const updatePayload = {
-      score: scoreData.score,
-      completed_portals: scoreData.completedPortals,
-      total_solved_questions: scoreData.totalSolvedQuestions,
-      time_spent_seconds: scoreData.timeSpentSec,
-      rank: scoreData.rank,
-      updated_at: new Date().toISOString(),
-    };
-
-    // If we have the Supabase row UUID, update by id
-    if (recordId) {
-      const { error } = await supabase
-        .from('participants')
-        .update(updatePayload)
-        .eq('id', recordId);
-
-      if (!error) return { success: true };
-      console.warn('Update by ID warning:', error.message);
-    }
-
-    // Fallback: update by registration_number and participant_id
-    const { error: fallbackError } = await supabase
-      .from('participants')
-      .update(updatePayload)
-      .eq('registration_number', participant.registration_number.trim().toUpperCase())
-      .eq('participant_id', participant.participant_id.trim().toUpperCase());
-
-    if (fallbackError) {
-      console.warn('Fallback update notice:', fallbackError.message);
-      return { success: false, error: fallbackError.message };
-    }
-
-    return { success: true };
-  } catch (err: any) {
-    console.warn('Error saving final score to database:', err);
-    return { success: false, error: err?.message };
-  }
-}
+) => updateParticipantLiveScore(null, participant, scoreData);

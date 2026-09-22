@@ -10,7 +10,7 @@ import { StatusView } from './components/StatusView';
 import { InventoryView } from './components/InventoryView';
 import { FestivalScheduleModal } from './components/FestivalScheduleModal';
 import { sound } from './utils/audio';
-import { ParticipantFormData, registerParticipant, updateParticipantFinalScore, getStoredParticipant } from './utils/supabase/participants';
+import { ParticipantFormData, registerParticipant, updateParticipantLiveScore, getStoredParticipant } from './utils/supabase/participants';
 import { ParticipantLoginPage } from './components/ParticipantLoginPage';
 
 export default function App() {
@@ -20,6 +20,9 @@ export default function App() {
 
   // Participant State
   const [currentParticipant, setCurrentParticipant] = useState<ParticipantFormData | null>(null);
+  const [participantDbId, setParticipantDbId] = useState<string | null>(null);
+  const currentParticipantRef = useRef<ParticipantFormData | null>(null);
+  const participantDbIdRef = useRef<string | null>(null);
   const [isSyncingScore, setIsSyncingScore] = useState<boolean>(false);
   const [scoreSynced, setScoreSynced] = useState<boolean>(false);
   
@@ -59,6 +62,35 @@ export default function App() {
     if (next) sound.playClick();
   };
 
+  // Calculate rank from score and completed count
+  const getRank = (sc: number, comp: number) => {
+    if (sc >= 220 || comp >= 17) return 'AARUUSH CHAMPION';
+    if (sc >= 170 || comp >= 12) return 'CYBER PRODIGY';
+    if (sc >= 110 || comp >= 7) return 'GRID TACTICIAN';
+    return 'TECH INITIATE';
+  };
+
+  // Real-time synchronization to Supabase database
+  const syncScoreToDatabase = (
+    currentScore: number,
+    completedCount: number,
+    totalSolvedCount: number,
+    timeRemainingSec: number
+  ) => {
+    const p = currentParticipantRef.current;
+    const dbId = participantDbIdRef.current;
+    if (!p && !dbId) return;
+
+    const rank = getRank(currentScore, completedCount);
+    updateParticipantLiveScore(dbId, p, {
+      score: currentScore,
+      completedPortals: completedCount,
+      totalSolvedQuestions: totalSolvedCount,
+      timeSpentSec: Math.max(0, 180 - timeRemainingSec),
+      rank,
+    }).catch((err) => console.warn('Live score sync error:', err));
+  };
+
   // Timer Countdown Effect
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -75,6 +107,11 @@ export default function App() {
           if (prev <= 10) {
             sound.playTick();
           }
+          // Real-time periodic database update every 10 seconds
+          if (prev % 10 === 0) {
+            const allSolved = Object.values(solvedQuestions).reduce((acc, l) => acc + l.length, 0);
+            syncScoreToDatabase(score, completedPortals.length, allSolved, prev);
+          }
           return prev - 1;
         });
       }, 1000);
@@ -83,15 +120,26 @@ export default function App() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isTimerActive, screen]);
+  }, [isTimerActive, screen, score, completedPortals, solvedQuestions]);
 
   // Start Quest
   const handleStartQuest = (participantData?: ParticipantFormData) => {
     if (participantData) {
       setCurrentParticipant(participantData);
-      registerParticipant(participantData).catch((err) => {
-        console.warn('Participant DB registration warning:', err);
-      });
+      currentParticipantRef.current = participantData;
+      setParticipantDbId(null);
+      participantDbIdRef.current = null;
+
+      registerParticipant(participantData)
+        .then((res) => {
+          if (res.id) {
+            setParticipantDbId(res.id);
+            participantDbIdRef.current = res.id;
+          }
+        })
+        .catch((err) => {
+          console.warn('Participant DB registration warning:', err);
+        });
     }
     setScoreSynced(false);
     setIsSyncingScore(false);
@@ -118,18 +166,12 @@ export default function App() {
 
   // Sync score with Supabase database when quest is completed
   useEffect(() => {
-    if (screen === 'completed' && currentParticipant) {
+    if (screen === 'completed' && (currentParticipant || participantDbIdRef.current)) {
       setIsSyncingScore(true);
       const totalSolved = (Object.values(solvedQuestions) as number[][]).reduce((acc, l) => acc + l.length, 0);
-      const getRank = (sc: number, comp: number) => {
-        if (sc >= 220 || comp >= 17) return 'AARUUSH CHAMPION';
-        if (sc >= 170 || comp >= 12) return 'CYBER PRODIGY';
-        if (sc >= 110 || comp >= 7) return 'GRID TACTICIAN';
-        return 'TECH INITIATE';
-      };
       const rank = getRank(score, completedPortals.length);
 
-      updateParticipantFinalScore(currentParticipant, {
+      updateParticipantLiveScore(participantDbIdRef.current, currentParticipant, {
         score,
         completedPortals: completedPortals.length,
         totalSolvedQuestions: totalSolved,
@@ -281,11 +323,23 @@ export default function App() {
     }
 
     const totalEarnedThis = questionPoints + domainClearBonus;
+    const nextScore = Math.min(MAX_SCORE, Math.max(MIN_SCORE, score + totalEarnedThis));
+    const nextCompletedCount = (domainClearBonus > 0 && !completedPortals.includes(portalId))
+      ? completedPortals.length + 1
+      : completedPortals.length;
+
+    const allSolvedCount = Object.values(solvedQuestions).reduce(
+      (acc, l) => acc + l.length,
+      0
+    ) + (isAlreadySolved ? 0 : 1);
 
     // Strictly enforce minimum 50 and maximum 250
-    setScore((prev) => Math.min(MAX_SCORE, Math.max(MIN_SCORE, prev + totalEarnedThis)));
+    setScore(nextScore);
     setStreak(nextStreak);
     setMaxStreak((prevMax) => Math.max(prevMax, nextStreak));
+
+    // Live update to Supabase in real-time immediately!
+    syncScoreToDatabase(nextScore, nextCompletedCount, allSolvedCount, timeRemaining);
 
     return {
       earnedPoints: totalEarnedThis,
