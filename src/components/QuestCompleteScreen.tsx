@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Award, Share2, Calendar, RotateCcw, Check, Sparkles, Trophy, Compass } from 'lucide-react';
+import { Award, Share2, Calendar, RotateCcw, Check, Sparkles, Trophy, Compass, ShieldCheck, User, Database, Loader2 } from 'lucide-react';
 import { sound } from '../utils/audio';
+import { ParticipantFormData } from '../utils/supabase/participants';
 
 interface QuestCompleteProps {
   score: number;
@@ -9,6 +10,9 @@ interface QuestCompleteProps {
   totalSolvedQuestions?: number;
   totalQuestions?: number;
   totalTimeSec: number;
+  participant?: ParticipantFormData | null;
+  isSyncingScore?: boolean;
+  scoreSynced?: boolean;
   onPlayAgain: () => void;
   onViewSchedule: () => void;
 }
@@ -20,6 +24,9 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
   totalSolvedQuestions = 0,
   totalQuestions = 85,
   totalTimeSec,
+  participant,
+  isSyncingScore = false,
+  scoreSynced = true,
   onPlayAgain,
   onViewSchedule,
 }) => {
@@ -46,7 +53,8 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
 
   const handleShare = () => {
     sound.playSelect();
-    const shareText = `⚡ I just conquered AARUUSH QUEST with ${score}/250 PTS (${completedCount}/${totalPortals} domains secured, ${totalSolvedQuestions}/${totalQuestions} MCQs solved)! Rank: ${getRank()} 🏆 #Aaruush2026 #SRMIST`;
+    const participantLabel = participant ? `[${participant.name} | ID: ${participant.participant_id}] ` : '';
+    const shareText = `⚡ ${participantLabel}conquered AARUUSH QUEST with ${score}/250 PTS (${completedCount}/${totalPortals} domains secured, ${totalSolvedQuestions}/${totalQuestions} MCQs solved)! Rank: ${getRank()} 🏆 #Aaruush2026 #SRMIST`;
     
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText);
@@ -98,6 +106,53 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
             {getRank()}
           </div>
         </div>
+
+        {/* Participant Clearance & Database Sync Card */}
+        {participant && (
+          <div className="w-full glass-panel rounded-xl p-4 border-cyan-500/30 bg-[#0e0e16]/80 text-left shadow-[0_0_20px_rgba(0,240,255,0.1)]">
+            <div className="flex items-center justify-between font-mono text-[11px] text-cyan-300 uppercase tracking-widest mb-2 pb-1.5 border-b border-white/10">
+              <span className="flex items-center gap-1.5 font-bold">
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                OFFICIAL PARTICIPANT DOSSIER
+              </span>
+              <span className="text-amber-400 font-bold">{participant.participant_id}</span>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div>
+                <span className="text-white/40 block text-[10px] uppercase">PARTICIPANT</span>
+                <span className="text-white font-bold truncate block">{participant.name}</span>
+              </div>
+              <div>
+                <span className="text-white/40 block text-[10px] uppercase">REGISTRATION NO</span>
+                <span className="text-cyan-300 font-bold tracking-wider block">{participant.registration_number}</span>
+              </div>
+              <div className="col-span-2 pt-1 border-t border-white/5 flex items-center justify-between text-[11px]">
+                <span className="text-white/40 truncate">{participant.srm_mail_id}</span>
+                <span className="text-white/50">{participant.contact_number}</span>
+              </div>
+            </div>
+
+            {/* Supabase Status Indicator */}
+            <div className="mt-2.5 pt-2 border-t border-cyan-500/20 flex items-center justify-between text-[11px] font-mono">
+              <span className="flex items-center gap-1.5 text-cyan-300">
+                <Database className="w-3 h-3 text-cyan-400" />
+                <span>MAINFRAME STATUS:</span>
+              </span>
+              {isSyncingScore ? (
+                <span className="flex items-center gap-1 text-amber-300">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span>RECORDING SCORE...</span>
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-emerald-400 font-bold">
+                  <Check className="w-3 h-3 text-emerald-400 stroke-[3]" />
+                  <span>SCORE LOCKED ({score} PTS)</span>
+                </span>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Total Score Card (Matches Image 5) */}
         <div className="w-full glass-panel rounded-xl p-5 flex flex-col justify-between border-white/10 text-left">

@@ -10,11 +10,17 @@ import { StatusView } from './components/StatusView';
 import { InventoryView } from './components/InventoryView';
 import { FestivalScheduleModal } from './components/FestivalScheduleModal';
 import { sound } from './utils/audio';
+import { ParticipantFormData, registerParticipant, updateParticipantFinalScore, getStoredParticipant } from './utils/supabase/participants';
 
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>('welcome');
   const [activeTab, setActiveTab] = useState<AppTab>('map');
   const [selectedPortalId, setSelectedPortalId] = useState<string | null>(null);
+
+  // Participant State
+  const [currentParticipant, setCurrentParticipant] = useState<ParticipantFormData | null>(() => getStoredParticipant());
+  const [isSyncingScore, setIsSyncingScore] = useState<boolean>(false);
+  const [scoreSynced, setScoreSynced] = useState<boolean>(false);
   
   // Quest state (Calibrated for Min: 50 PTS, Max: 250 PTS)
   const MIN_SCORE = 50;
@@ -79,7 +85,15 @@ export default function App() {
   }, [isTimerActive, screen]);
 
   // Start Quest
-  const handleStartQuest = () => {
+  const handleStartQuest = (participantData?: ParticipantFormData) => {
+    if (participantData) {
+      setCurrentParticipant(participantData);
+      registerParticipant(participantData).catch((err) => {
+        console.warn('Participant DB registration warning:', err);
+      });
+    }
+    setScoreSynced(false);
+    setIsSyncingScore(false);
     setTimeRemaining(180);
     setScore(MIN_SCORE);
     setCompletedPortals([]);
@@ -100,6 +114,37 @@ export default function App() {
     setSelectedPortalId(null);
     setScreen('map');
   };
+
+  // Sync score with Supabase database when quest is completed
+  useEffect(() => {
+    if (screen === 'completed' && currentParticipant) {
+      setIsSyncingScore(true);
+      const totalSolved = (Object.values(solvedQuestions) as number[][]).reduce((acc, l) => acc + l.length, 0);
+      const getRank = (sc: number, comp: number) => {
+        if (sc >= 220 || comp >= 17) return 'AARUUSH CHAMPION';
+        if (sc >= 170 || comp >= 12) return 'CYBER PRODIGY';
+        if (sc >= 110 || comp >= 7) return 'GRID TACTICIAN';
+        return 'TECH INITIATE';
+      };
+      const rank = getRank(score, completedPortals.length);
+
+      updateParticipantFinalScore(currentParticipant, {
+        score,
+        completedPortals: completedPortals.length,
+        totalSolvedQuestions: totalSolved,
+        timeSpentSec: 180 - timeRemaining,
+        rank,
+      }).then((res) => {
+        setIsSyncingScore(false);
+        if (res.success) {
+          setScoreSynced(true);
+        }
+      }).catch((err) => {
+        console.warn('Score sync warning:', err);
+        setIsSyncingScore(false);
+      });
+    }
+  }, [screen]);
 
   // Select a portal to challenge and resume at the first unsolved question
   const handleSelectPortal = (portalId: string) => {
@@ -491,7 +536,10 @@ export default function App() {
           totalSolvedQuestions={(Object.values(solvedQuestions) as number[][]).reduce((acc, l) => acc + l.length, 0)}
           totalQuestions={portals.length * 5}
           totalTimeSec={180 - timeRemaining}
-          onPlayAgain={handleStartQuest}
+          participant={currentParticipant}
+          isSyncingScore={isSyncingScore}
+          scoreSynced={scoreSynced}
+          onPlayAgain={() => setScreen('welcome')}
           onViewSchedule={() => setShowScheduleModal(true)}
         />
       )}

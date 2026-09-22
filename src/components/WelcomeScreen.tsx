@@ -1,9 +1,11 @@
 import React from 'react';
 import { Timer, Flag, Rocket, Volume2, VolumeX, Info, Calendar } from 'lucide-react';
 import { sound } from '../utils/audio';
+import { ParticipantModal } from './ParticipantModal';
+import { ParticipantFormData } from '../utils/supabase/participants';
 
 interface WelcomeScreenProps {
-  onStartQuest: () => void;
+  onStartQuest: (participant: ParticipantFormData) => void;
   onOpenSchedule: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
@@ -16,10 +18,16 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onToggleSound,
 }) => {
   const [showBriefing, setShowBriefing] = React.useState(false);
+  const [showParticipantModal, setShowParticipantModal] = React.useState(false);
 
   const handleStart = () => {
     sound.playSelect();
-    onStartQuest();
+    setShowParticipantModal(true);
+  };
+
+  const handleParticipantSubmit = (data: ParticipantFormData) => {
+    setShowParticipantModal(false);
+    onStartQuest(data);
   };
 
   return (
@@ -271,6 +279,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </div>
         </div>
       )}
+
+      {/* Participant Identification Modal (5 Components) */}
+      <ParticipantModal
+        isOpen={showParticipantModal}
+        onClose={() => setShowParticipantModal(false)}
+        onSubmit={handleParticipantSubmit}
+      />
     </div>
   );
 };
