@@ -37,3 +37,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
 
+      - name: Update repository homepage and description
+        continue-on-error: true
+        run: |
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }} \
+            -d '{"homepage":"https://adityaswaroop1100-jpg.github.io/AARUUSH-QUEST/","description":"⚡ AARUUSH QUEST - Cyberpunk 17-Domain Festival Speedrun Challenge"}'
+
+
