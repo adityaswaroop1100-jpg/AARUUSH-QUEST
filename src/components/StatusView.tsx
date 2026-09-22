@@ -6,6 +6,7 @@ interface StatusViewProps {
   portals: DomainPortal[];
   completedPortals: string[];
   failedPortals: string[];
+  solvedQuestions?: Record<string, number[]>;
   score: number;
   streak: number;
   maxStreak: number;
@@ -16,27 +17,30 @@ export const StatusView: React.FC<StatusViewProps> = ({
   portals,
   completedPortals,
   failedPortals,
+  solvedQuestions = {},
   score,
   streak,
   maxStreak,
   timeRemaining,
 }) => {
   const totalPortals = portals.length;
+  const totalQuestions = portals.reduce((sum, p) => sum + (p.challenges?.length || 5), 0);
+  const totalSolvedQuestions = (Object.values(solvedQuestions) as number[][]).reduce((sum, list) => sum + list.length, 0);
   const completedCount = completedPortals.length;
-  const attempts = completedCount + failedPortals.length;
-  const accuracy = attempts > 0 ? Math.round((completedCount / attempts) * 100) : 100;
+  const attempts = totalSolvedQuestions + failedPortals.length;
+  const accuracy = attempts > 0 ? Math.round((totalSolvedQuestions / attempts) * 100) : 100;
   const timeElapsed = 180 - timeRemaining;
 
   // Categories
   const categories = Array.from(new Set(portals.map((p) => p.category)));
 
-  // Simulated live leaderboards of Aaruush Fest
+  // Calibrated live leaderboards of Aaruush Fest matching 1700+ point scale
   const leaderboard = [
-    { rank: 1, team: 'SYNAPSE_9 (IIT M)', score: 320, time: '2:15' },
+    { rank: 1, team: 'SYNAPSE_9 (IIT M)', score: 1480, time: '2:15' },
     { rank: 2, team: 'YOU (LIVE QUEST)', score: score, time: `${Math.floor(timeElapsed / 60)}:${String(timeElapsed % 60).padStart(2, '0')}`, isUser: true },
-    { rank: 3, team: 'CYBER_VORTEX (BITS)', score: 285, time: '2:40' },
-    { rank: 4, team: 'AERO_KINETIX (SRM)', score: 260, time: '2:50' },
-    { rank: 5, team: 'QUANTUM_VOID (NIT T)', score: 240, time: '2:55' },
+    { rank: 3, team: 'CYBER_VORTEX (BITS)', score: 1220, time: '2:40' },
+    { rank: 4, team: 'AERO_KINETIX (SRM)', score: 1050, time: '2:50' },
+    { rank: 5, team: 'QUANTUM_VOID (NIT T)', score: 890, time: '2:55' },
   ].sort((a, b) => b.score - a.score).map((entry, idx) => ({ ...entry, rank: idx + 1 }));
 
   return (
@@ -85,7 +89,7 @@ export const StatusView: React.FC<StatusViewProps> = ({
           <div className="font-['Space_Grotesk',sans-serif] text-2xl md:text-3xl font-bold text-cyan-300">
             {accuracy}%
           </div>
-          <div className="text-[10px] font-mono text-white/50 mt-1">{completedCount} BREACHES</div>
+          <div className="text-[10px] font-mono text-white/50 mt-1">{totalSolvedQuestions} / {totalQuestions} MCQS SOLVED</div>
         </div>
 
         {/* Time Efficiency */}
@@ -124,7 +128,10 @@ export const StatusView: React.FC<StatusViewProps> = ({
         {/* Domain List Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
           {portals.map((p) => {
-            const isCompleted = completedPortals.includes(p.id);
+            const domainSolved = solvedQuestions[p.id] || [];
+            const domainTotal = p.challenges?.length || 5;
+            const isCompleted = completedPortals.includes(p.id) || domainSolved.length >= domainTotal;
+            const domainPercent = Math.min(100, Math.round((domainSolved.length / domainTotal) * 100));
 
             return (
               <div
@@ -148,25 +155,30 @@ export const StatusView: React.FC<StatusViewProps> = ({
                     className={`text-[10px] font-bold shrink-0 px-2 py-0.5 rounded ${
                       isCompleted
                         ? 'bg-green-950 border border-green-500/40 text-green-300'
+                        : domainSolved.length > 0
+                        ? 'bg-cyan-950 border border-cyan-500/40 text-cyan-300'
                         : 'bg-white/5 text-white/40'
                     }`}
                   >
-                    {isCompleted ? '✓ BREACHED' : 'PENDING'}
+                    {isCompleted ? '✓ BREACHED' : domainSolved.length > 0 ? `${domainSolved.length}/${domainTotal} SOLVED` : 'PENDING'}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center text-[10px] text-white/50 mb-1">
                   <span className="truncate">{p.category}</span>
-                  <span className={isCompleted ? 'text-green-400 font-bold' : ''}>
-                    {isCompleted ? '1/1 (100%)' : '0/1 (0%)'}
+                  <span className={isCompleted ? 'text-green-400 font-bold' : domainSolved.length > 0 ? 'text-cyan-300 font-bold' : ''}>
+                    {domainSolved.length}/{domainTotal} ({domainPercent}%)
                   </span>
                 </div>
 
                 <div className="w-full h-1 bg-[#131318] rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${
-                      isCompleted ? 'w-full bg-green-400 shadow-[0_0_6px_#4ade80]' : 'w-0 bg-cyan-500'
+                      isCompleted
+                        ? 'bg-green-400 shadow-[0_0_6px_#4ade80]'
+                        : 'bg-cyan-500 shadow-[0_0_6px_#00f0ff]'
                     }`}
+                    style={{ width: `${domainPercent}%` }}
                   />
                 </div>
               </div>

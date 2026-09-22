@@ -8,6 +8,7 @@ interface CyberMapProps {
   portals: DomainPortal[];
   completedPortals: string[];
   failedPortals: string[];
+  solvedQuestions?: Record<string, number[]>;
   timeRemaining: number;
   score: number;
   activeTab: AppTab;
@@ -20,6 +21,7 @@ export const CyberMap: React.FC<CyberMapProps> = ({
   portals,
   completedPortals,
   failedPortals,
+  solvedQuestions = {},
   timeRemaining,
   score,
   activeTab,
@@ -264,19 +266,25 @@ export const CyberMap: React.FC<CyberMapProps> = ({
                   </span>
                   <span
                     className={`text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded ${
-                      completedPortals.includes(selectedPortal.id)
+                      completedPortals.includes(selectedPortal.id) || (solvedQuestions[selectedPortal.id] || []).length >= (selectedPortal.challenges?.length || 5)
                         ? 'bg-amber-950 text-amber-300 border border-amber-500/40'
+                        : (solvedQuestions[selectedPortal.id] || []).length > 0
+                        ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40'
                         : 'bg-cyan-950/40 text-cyan-300'
                     }`}
                   >
-                    {completedPortals.includes(selectedPortal.id) ? '✓ BREACHED' : selectedPortal.difficulty}
+                    {completedPortals.includes(selectedPortal.id) || (solvedQuestions[selectedPortal.id] || []).length >= (selectedPortal.challenges?.length || 5)
+                      ? '✓ SECURED'
+                      : (solvedQuestions[selectedPortal.id] || []).length > 0
+                      ? `${(solvedQuestions[selectedPortal.id] || []).length}/${selectedPortal.challenges?.length || 5} SOLVED`
+                      : selectedPortal.difficulty}
                   </span>
                 </div>
                 <h3 className="font-['Space_Grotesk',sans-serif] font-bold text-base md:text-lg text-white truncate">
                   {selectedPortal.name}
                 </h3>
-                <p className="text-white/70 text-xs line-clamp-1">
-                  {selectedPortal.challenge.description}
+                <p className="text-white/70 text-xs line-clamp-1 font-mono">
+                  {(selectedPortal.challenges?.length || 5)} MCQs • +{(selectedPortal.challenges?.length || 5) * 20} Base Marks
                 </p>
               </div>
             </div>
@@ -293,7 +301,13 @@ export const CyberMap: React.FC<CyberMapProps> = ({
                 className="px-4 py-2.5 rounded bg-cyan-400 hover:bg-cyan-300 text-cyan-950 font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,240,255,0.4)] cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
-                <span>ENTER</span>
+                <span>
+                  {completedPortals.includes(selectedPortal.id) || (solvedQuestions[selectedPortal.id] || []).length >= (selectedPortal.challenges?.length || 5)
+                    ? 'REPLAY'
+                    : (solvedQuestions[selectedPortal.id] || []).length > 0
+                    ? 'RESUME'
+                    : 'ENTER'}
+                </span>
               </button>
             </div>
           </div>

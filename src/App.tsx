@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DOMAIN_PORTALS } from './data/portals';
-import { AppScreen, AppTab, DomainPortal } from './types';
+import { AppScreen, AppTab, DomainPortal, AnswerRecordResult } from './types';
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { CyberMap } from './components/CyberMap';
 import { ChallengeModal } from './components/ChallengeModal';
@@ -22,6 +22,8 @@ export default function App() {
   const [score, setScore] = useState<number>(0);
   const [completedPortals, setCompletedPortals] = useState<string[]>([]);
   const [failedPortals, setFailedPortals] = useState<string[]>([]);
+  const [solvedQuestions, setSolvedQuestions] = useState<Record<string, number[]>>({});
+  const [attemptedQuestions, setAttemptedQuestions] = useState<Record<string, number[]>>({});
   const [streak, setStreak] = useState<number>(0);
   const [maxStreak, setMaxStreak] = useState<number>(0);
   const [portalQuestionIndices, setPortalQuestionIndices] = useState<Record<string, number>>({});
@@ -80,6 +82,9 @@ export default function App() {
     setScore(0);
     setCompletedPortals([]);
     setFailedPortals([]);
+    setSolvedQuestions({});
+    setAttemptedQuestions({});
+    setPortalQuestionIndices({});
     setStreak(0);
     setMaxStreak(0);
     setPowerUps({
@@ -94,71 +99,162 @@ export default function App() {
     setScreen('map');
   };
 
-  // Select a portal to challenge
+  // Select a portal to challenge and resume at the first unsolved question
   const handleSelectPortal = (portalId: string) => {
     setSelectedPortalId(portalId);
+    const portal = portals.find((p) => p.id === portalId);
+    const qList = portal?.challenges || [portal?.challenge];
+    const solved = solvedQuestions[portalId] || [];
+
+    // Find first unsolved question index so the player resumes smoothly
+    let nextUnsolved = qList.findIndex((_, idx) => !solved.includes(idx));
+    if (nextUnsolved === -1) nextUnsolved = 0;
+
+    setPortalQuestionIndices((prev) => ({
+      ...prev,
+      [portalId]: nextUnsolved,
+    }));
     setScreen('challenge');
   };
 
-  // Real-time answer recording whenever any question is answered
-  const handleRecordAnswer = (portalId: string, isCorrect: boolean, timeSpentSec: number, basePoints?: number): number => {
+  // Real-time answer recording with anti-exploit verification & transparent marks breakdown
+  const handleRecordAnswer = (
+    portalId: string,
+    questionIndex: number,
+    isCorrect: boolean,
+    timeSpentSec: number,
+    basePoints: number = 20
+  ): AnswerRecordResult => {
     const portal = portals.find((p) => p.id === portalId);
-    if (!portal) return 0;
-
-    if (isCorrect) {
-      setCompletedPortals((prev) => {
-        if (!prev.includes(portalId)) {
-          const updated = [...prev, portalId];
-          if (updated.length >= portals.length) {
-            setTimeout(() => {
-              setIsTimerActive(false);
-              setScreen('completed');
-            }, 1200);
-          }
-          return updated;
-        }
-        return prev;
-      });
-
-      // Calculate score based on actual questions answered correctly
-      let earnedPoints = (basePoints !== undefined && basePoints > 0)
-        ? basePoints
-        : (portal.challenge.basePoints || 20);
-
-      // Speed bonus
-      if (timeSpentSec <= (portal.challenge.timeBonusLimitSec || 15)) {
-        earnedPoints += 10;
-      }
-
-      // Streak bonus
-      const currentStreak = streak + 1;
-      earnedPoints += Math.min(15, currentStreak * 2);
-
-      // Overcharge multiplier
-      if (isOverchargeActive) {
-        earnedPoints *= 2;
-        setIsOverchargeActive(false);
-      }
-
-      setScore((prev) => prev + earnedPoints);
-      setStreak((prev) => {
-        const next = prev + 1;
-        setMaxStreak((m) => Math.max(m, next));
-        return next;
-      });
-
-      return earnedPoints;
-    } else {
-      setFailedPortals((prev) => (prev.includes(portalId) ? prev : [...prev, portalId]));
-      setStreak(0);
-      return 0;
+    if (!portal) {
+      return {
+        earnedPoints: 0,
+        basePoints: 0,
+        speedBonus: 0,
+        streakBonus: 0,
+        domainClearBonus: 0,
+        isDuplicate: false,
+        isDomainMastered: false,
+        totalSolvedInDomain: 0,
+        totalQuestionsInDomain: 5,
+      };
     }
+
+    const questionsList = (portal.challenges && portal.challenges.length > 0)
+      ? portal.challenges
+      : [portal.challenge];
+    const totalQuestions = questionsList.length;
+    const currentSolved = solvedQuestions[portalId] || [];
+    const isAlreadySolved = currentSolved.includes(questionIndex);
+
+    // Track attempt
+    setAttemptedQuestions((prev) => {
+      const currentList = prev[portalId] || [];
+      return currentList.includes(questionIndex) ? prev : { ...prev, [portalId]: [...currentList, questionIndex] };
+    });
+
+    if (!isCorrect) {
+      // Wrong answer - streak resets
+      setStreak(0);
+      setFailedPortals((prev) => (prev.includes(portalId) ? prev : [...prev, portalId]));
+
+      return {
+        earnedPoints: 0,
+        basePoints: 0,
+        speedBonus: 0,
+        streakBonus: 0,
+        domainClearBonus: 0,
+        isDuplicate: false,
+        isDomainMastered: completedPortals.includes(portalId),
+        totalSolvedInDomain: currentSolved.length,
+        totalQuestionsInDomain: totalQuestions,
+      };
+    }
+
+    // Glitch prevention: If this question was already solved, prevent double scoring / infinite point farming
+    if (isAlreadySolved) {
+      return {
+        earnedPoints: 0,
+        basePoints: 0,
+        speedBonus: 0,
+        streakBonus: 0,
+        domainClearBonus: 0,
+        isDuplicate: true,
+        isDomainMastered: completedPortals.includes(portalId),
+        totalSolvedInDomain: currentSolved.length,
+        totalQuestionsInDomain: totalQuestions,
+      };
+    }
+
+    // Standardized Marks Breakdown:
+    // Base marks: 20 pts per question
+    const earnedBase = basePoints > 0 ? basePoints : 20;
+
+    // Speed bonus: +5 pts if answered within timeBonusLimitSec (10s)
+    const timeLimit = questionsList[questionIndex]?.timeBonusLimitSec || 10;
+    const speedBonus = timeSpentSec <= timeLimit ? 5 : 0;
+
+    // Streak bonus: +2 pts per consecutive streak tier (max +10 pts)
+    const nextStreak = streak + 1;
+    const streakBonus = Math.min(10, nextStreak * 2);
+
+    let questionPoints = earnedBase + speedBonus + streakBonus;
+
+    // Overcharge power-up multiplier: 2x
+    if (isOverchargeActive) {
+      questionPoints *= 2;
+      setIsOverchargeActive(false);
+    }
+
+    // Update solved questions set
+    const updatedSolved = [...currentSolved, questionIndex];
+    setSolvedQuestions((prev) => ({
+      ...prev,
+      [portalId]: updatedSolved,
+    }));
+
+    // Check if domain is now fully solved
+    const isDomainMastered = updatedSolved.length >= totalQuestions;
+    let domainClearBonus = 0;
+
+    if (isDomainMastered && !completedPortals.includes(portalId)) {
+      domainClearBonus = 25; // +25 pts Domain Mastery Clearance Bonus
+      setCompletedPortals((prev) => {
+        if (prev.includes(portalId)) return prev;
+        const updated = [...prev, portalId];
+        if (updated.length >= portals.length) {
+          setTimeout(() => {
+            setIsTimerActive(false);
+            setScreen('completed');
+          }, 1200);
+        }
+        return updated;
+      });
+    }
+
+    const totalEarnedThis = questionPoints + domainClearBonus;
+
+    setScore((prev) => prev + totalEarnedThis);
+    setStreak(nextStreak);
+    setMaxStreak((prevMax) => Math.max(prevMax, nextStreak));
+
+    return {
+      earnedPoints: totalEarnedThis,
+      basePoints: earnedBase,
+      speedBonus,
+      streakBonus,
+      domainClearBonus,
+      isDuplicate: false,
+      isDomainMastered,
+      totalSolvedInDomain: updatedSolved.length,
+      totalQuestionsInDomain: totalQuestions,
+    };
   };
 
-  const handleAdvancePortalQuestion = (portalId: string, totalQuestions: number) => {
+  const handleAdvancePortalQuestion = (portalId: string, nextIndex: number) => {
     setPortalQuestionIndices((prev) => ({
       ...prev,
-      [portalId]: ((prev[portalId] || 0) + 1) % totalQuestions,
+      [portalId]: nextIndex,
     }));
   };
 
@@ -210,6 +306,7 @@ export default function App() {
               portals={portals}
               completedPortals={completedPortals}
               failedPortals={failedPortals}
+              solvedQuestions={solvedQuestions}
               timeRemaining={timeRemaining}
               score={score}
               activeTab={activeTab}
@@ -239,6 +336,7 @@ export default function App() {
                   portals={portals}
                   completedPortals={completedPortals}
                   failedPortals={failedPortals}
+                  solvedQuestions={solvedQuestions}
                   onSelectPortal={handleSelectPortal}
                 />
               </div>
@@ -282,6 +380,7 @@ export default function App() {
                   portals={portals}
                   completedPortals={completedPortals}
                   failedPortals={failedPortals}
+                  solvedQuestions={solvedQuestions}
                   score={score}
                   streak={streak}
                   maxStreak={maxStreak}
@@ -362,13 +461,14 @@ export default function App() {
       {screen === 'challenge' && currentPortal && (
         <ChallengeModal
           portal={currentPortal}
-          initialQuestionIndex={0}
+          initialQuestionIndex={portalQuestionIndices[currentPortal.id] || 0}
           timeRemaining={timeRemaining}
           score={score}
           completedCount={completedPortals.length}
           totalPortals={portals.length}
+          solvedQuestionIndices={solvedQuestions[currentPortal.id] || []}
           onRecordAnswer={handleRecordAnswer}
-          onAdvanceQuestion={(total) => handleAdvancePortalQuestion(currentPortal.id, total)}
+          onAdvanceQuestion={(nextIdx) => handleAdvancePortalQuestion(currentPortal.id, nextIdx)}
           onBackToMap={() => {
             sound.playClick();
             setScreen('map');
@@ -385,6 +485,8 @@ export default function App() {
           score={score}
           completedCount={completedPortals.length}
           totalPortals={portals.length}
+          totalSolvedQuestions={(Object.values(solvedQuestions) as number[][]).reduce((acc, l) => acc + l.length, 0)}
+          totalQuestions={portals.length * 5}
           totalTimeSec={180 - timeRemaining}
           onPlayAgain={handleStartQuest}
           onViewSchedule={() => setShowScheduleModal(true)}

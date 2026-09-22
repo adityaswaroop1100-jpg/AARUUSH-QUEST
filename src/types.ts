@@ -47,6 +47,18 @@ export interface MicroChallenge {
   };
 }
 
+export interface AnswerRecordResult {
+  earnedPoints: number;
+  basePoints: number;
+  speedBonus: number;
+  streakBonus: number;
+  domainClearBonus: number;
+  isDuplicate: boolean;
+  isDomainMastered: boolean;
+  totalSolvedInDomain: number;
+  totalQuestionsInDomain: number;
+}
+
 export interface DomainPortal {
   id: string;
   name: string;

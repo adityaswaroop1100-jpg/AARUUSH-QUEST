@@ -27,7 +27,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 0,
       explanation: 'Gear speed ratio is inversely proportional to the number of teeth: N2 = N1 × (T1 / T2) = 300 × (20 / 60) = 100 RPM.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Speed is inversely proportional to teeth count: N1·T1 = N2·T2.',
     },
     challenges: [
@@ -46,7 +46,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'Gear speed ratio is inversely proportional to the number of teeth: N2 = N1 × (T1 / T2) = 300 × (20 / 60) = 100 RPM.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Speed is inversely proportional to teeth count: N1·T1 = N2·T2.',
       },
       {
@@ -64,7 +64,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 3,
         explanation: 'The Carnot cycle is composed of two reversible isothermal and two reversible adiabatic processes, achieving the maximum theoretical thermal efficiency.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Named after French physicist Sadi Carnot (η = 1 - Tc/Th).',
       },
       {
@@ -82,7 +82,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'For a 4-bar planar mechanism: n = 4 links, j = 4 revolute joints, h = 0. F = 3(4 - 1) - 2(4) = 9 - 8 = 1 Degree of Freedom.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'A standard four-bar linkage requires exactly one driver input to dictate full position.',
       },
       {
@@ -100,7 +100,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'Pressure P = F1 / A1 = 50 N / 5 cm² = 10 N/cm². Force on second piston F2 = P × A2 = 10 N/cm² × 50 cm² = 500 N.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Hydraulic force multiplies by the ratio of the cross-sectional areas: A2 / A1 = 10.',
       },
       {
@@ -118,7 +118,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Lock washers exert continuous spring force and friction against the nut, preventing dynamic vibrational loosening during machine operation.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Mechanical assemblies undergo vibration that tends to back out threaded nuts.',
       },
     ],
@@ -155,7 +155,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 1,
       explanation: 'Maximum horizontal range occurs when sin(2θ) reaches its maximum value of 1, which corresponds to 2θ = 90° or θ = 45°.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'The sine function reaches its peak value at 90 degrees.',
     },
     challenges: [
@@ -174,7 +174,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Maximum horizontal range occurs when sin(2θ) reaches its maximum value of 1, which corresponds to 2θ = 90° or θ = 45°.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The sine function reaches its peak value at 90 degrees.',
       },
       {
@@ -192,7 +192,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'Because kinetic energy is proportional to the square of velocity (KE ∝ v²), doubling velocity results in 2² = 4 times the kinetic energy.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Kinetic energy scales quadratically with velocity.',
       },
       {
@@ -210,7 +210,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'In any single-elimination tournament with N teams, every match eliminates exactly 1 team. To leave 1 champion from 32 teams, exactly 32 - 1 = 31 matches are required.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Every match eliminates exactly one participant until one winner remains: N - 1.',
       },
       {
@@ -228,7 +228,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'In a head-on 1D elastic collision between two identical masses, velocities are exchanged. Sphere A comes to a complete rest (0 m/s) and Sphere B moves off at 5 m/s.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Identical masses undergoing elastic collision swap velocities.',
       },
       {
@@ -246,7 +246,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Limiting static friction is the peak frictional force resisting relative motion just before sliding begins, providing the highest traction available.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Static friction increases up to a maximum \'limiting\' value before slipping occurs.',
       },
     ],
@@ -282,8 +282,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 3, // D) Father
       explanation: 'The "only son of my mother" is Suresh himself. Therefore, the boy is Suresh\'s son, making Suresh the Father.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: 'Who is the "only son" of Suresh\'s mother? It is Suresh himself!',
     },
     challenges: [
@@ -301,8 +301,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 3, // D) Father
         explanation: 'The "only son of my mother" is Suresh himself. Therefore, the boy is Suresh\'s son, making Suresh the Father.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Who is the "only son" of Suresh\'s mother? It is Suresh himself!',
       },
       {
@@ -319,8 +319,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 3, // D) Neither I nor II follows
         explanation: 'Neither conclusion follows logically. We have no information regarding male athletes or whether other athletes can play.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'The premises make no statement regarding male athletes or the playing ability of other athletes.',
       },
       {
@@ -337,8 +337,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) 888 + 88 + 8 + 8 + 8
         explanation: '888 + 88 + 8 + 8 + 8 = 1000. It uses 3 + 2 + 1 + 1 + 1 = exactly eight 8s!',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Count the digits: 888 has 3, 88 has 2, plus three single 8s = 8 eights total.',
       },
       {
@@ -355,8 +355,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) 132
         explanation: 'For 132: the first digit is 1, the last digit is 2 (2 × 1), and the middle digit is 3 (1 + 2 = 3).',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Check 132: first is 1, last is 2 (2x1), middle is 1+2 = 3.',
       },
       {
@@ -373,8 +373,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) 7.5°
         explanation: 'At 3:15, the minute hand is exactly at 90°. The hour hand has advanced 15 minutes × 0.5°/minute = 7.5° past the 3, so the angle is 7.5°.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Each minute, the hour hand moves 0.5°. In 15 minutes, it moves 7.5° past the 3.',
       },
     ],
@@ -410,8 +410,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 1, // B) Logo
       explanation: 'A logo is a graphic mark, emblem, or symbol used to identify and represent a company, product, or brand.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: 'It is the core visual symbol of a company or brand.',
     },
     challenges: [
@@ -429,8 +429,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Logo
         explanation: 'A logo is a graphic mark, emblem, or symbol used to identify and represent a company, product, or brand.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It is the core visual symbol of a company or brand.',
       },
       {
@@ -447,8 +447,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Color Palette
         explanation: 'A color palette is the chosen range of colors used in visual design to establish mood, harmony, and brand identity.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'The specific group of colors chosen to create visual harmony.',
       },
       {
@@ -465,8 +465,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C) User Interface (UI)
         explanation: 'The User Interface (UI) consists of the visual elements (screens, buttons, menus, icons) through which users interact with a digital device or software.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'UI stands for User Interface — the screens and buttons you interact with.',
       },
       {
@@ -483,8 +483,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Digital Design
         explanation: 'Digital Design encompasses creating visual content using digital software, merging typography, imagery, and UI aesthetics.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'The exact domain you are currently in!',
       },
       {
@@ -501,8 +501,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C) Figma
         explanation: 'Figma is the industry-standard collaborative interface design tool used to design and prototype websites and mobile apps using frames.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'The most popular modern web-based UI/UX prototyping and design tool.',
       },
     ],
@@ -538,8 +538,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 1, // B) Decentralization
       explanation: 'Decentralization is a foundational pillar of Web3, distributing authority across peer-to-peer networks.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: 'It shifts power away from centralized servers and corporations.',
     },
     challenges: [
@@ -557,8 +557,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Decentralization
         explanation: 'Decentralization is a foundational pillar of Web3, distributing authority across peer-to-peer networks.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It shifts power away from centralized servers and corporations.',
       },
       {
@@ -575,8 +575,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Password
         explanation: 'A password is a fundamental secret credential used for authenticating user identity and securing accounts.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'A secret sequence of characters you enter to log in.',
       },
       {
@@ -593,8 +593,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Internet of Things
         explanation: 'IoT stands for Internet of Things, describing smart physical objects embedded with sensors and connectivity.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Connecting every smart "thing" to the web.',
       },
       {
@@ -611,8 +611,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Cryptographic linking of blocks
         explanation: 'Each block contains the cryptographic hash of the previous block; modifying any transaction breaks the entire cryptographic chain.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Each block is cryptographically bound to the hash of the previous block.',
       },
       {
@@ -629,8 +629,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Automatically execute predefined rules on a blockchain
         explanation: 'Smart contracts are self-executing agreements with the terms written into lines of code running on a blockchain.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Self-executing code that runs when predetermined conditions are met.',
       },
     ],
@@ -667,7 +667,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 1,
       explanation: 'Ping measures the round-trip latency in milliseconds for a network packet to travel from the local client to the game server and back.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Lower ping (measured in milliseconds) indicates a faster, lower-latency connection.',
     },
     challenges: [
@@ -686,7 +686,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Ping measures the round-trip latency in milliseconds for a network packet to travel from the local client to the game server and back.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Lower ping (measured in milliseconds) indicates a faster, lower-latency connection.',
       },
       {
@@ -704,7 +704,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'At 240Hz, a new frame is drawn every 1000 / 240 ≈ 4.16 milliseconds, significantly reducing motion blur and input lag.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Divide 1000 milliseconds by 240 frames per second.',
       },
       {
@@ -722,7 +722,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'A clutch is when the last surviving player on a team manages to eliminate all remaining enemy players and win the round under extreme pressure.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Often celebrated as a \'1vX clutch\'.',
       },
       {
@@ -740,7 +740,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'An AABB (Axis-Aligned Bounding Box) requires only simple coordinate comparisons along X, Y, and Z axes without matrix rotations, making it extremely fast for broad-phase collision detection.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Bounding boxes whose edges are aligned with the world coordinate axes require no trigonometric transformations.',
       },
       {
@@ -758,7 +758,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'DLSS stands for Deep Learning Super Sampling. It uses deep neural networks to upscale lower-resolution frames to higher resolutions with high visual fidelity and boosted FPS.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'It leverages Deep Learning AI models on Tensor cores to Super Sample game graphics.',
       },
     ],
@@ -795,7 +795,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 1, // B) HTML
       explanation: 'HTML (HyperText Markup Language) is primarily used to structure content on the web.',
       basePoints: 20,
-      timeBonusLimitSec: 8,
+      timeBonusLimitSec: 10,
       hint: 'It stands for HyperText Markup Language.',
     },
     challenges: [
@@ -813,8 +813,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) HTML
         explanation: 'HTML (HyperText Markup Language) is primarily used to structure content on the web.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It stands for HyperText Markup Language.',
       },
       {
@@ -831,8 +831,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C) Linux
         explanation: 'Linux is a widely used open-source operating system kernel.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It is an open-source Unix-like OS with a penguin mascot.',
       },
       {
@@ -849,8 +849,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Internet Protocol
         explanation: 'IP stands for Internet Protocol, which routes and addresses data packets across networks.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It pairs with TCP in the TCP/IP stack.',
       },
       {
@@ -867,8 +867,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Voice Assistant
         explanation: 'Voice Assistants (like Siri, Google Assistant, and Alexa) utilize AI and Natural Language Processing to interact with users.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Think of software that understands your spoken voice commands.',
       },
       {
@@ -885,8 +885,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Python
         explanation: 'Python is the industry standard for Data Science due to extensive libraries like NumPy, Pandas, and Matplotlib.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Its syntax is clean, high-level, and famous in ML.',
       },
     ],
@@ -923,7 +923,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 1,
       explanation: 'According to Archimedes\' Principle, an object floats when the upward buoyant force (equal to the weight of the displaced liquid) balances the total downward weight of the vessel.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'A vessel floats when the weight of water it displaces equals its total weight.',
     },
     challenges: [
@@ -942,7 +942,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'According to Archimedes\' Principle, an object floats when the upward buoyant force (equal to the weight of the displaced liquid) balances the total downward weight of the vessel.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'A vessel floats when the weight of water it displaces equals its total weight.',
       },
       {
@@ -960,7 +960,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'Hooke\'s Law states that within a material\'s elastic limit, normal stress is directly proportional to normal strain (σ = E · ε, where E is Young\'s Modulus).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Stress divided by strain equals Young\'s modulus of elasticity.',
       },
       {
@@ -978,7 +978,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'In an ideal pin-jointed truss where loads are applied only at nodes, each member acts as a two-force member carrying purely axial tension or axial compression.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Truss members are engineered to carry loads purely along their longitudinal axis.',
       },
       {
@@ -996,7 +996,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Hydration is the chemical bonding reaction between cement compounds and water that produces calcium silicate hydrate (C-S-H) gel, bonding the aggregates together.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'It is called the hydration reaction of cement.',
       },
       {
@@ -1014,7 +1014,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'At the neutral axis (y = 0), the longitudinal fibers undergo neither elongation nor contraction, so the bending normal stress is exactly zero.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The neutral axis separates the compression zone from the tension zone.',
       },
     ],
@@ -1050,8 +1050,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 0, // A) Adenosine triphosphate
       explanation: 'ATP stands for Adenosine Triphosphate, the primary energy carrier in all living organisms.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: "It is the cell's primary energy molecule containing three phosphate groups.",
     },
     challenges: [
@@ -1069,8 +1069,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Adenosine triphosphate
         explanation: 'ATP stands for Adenosine Triphosphate, the primary energy carrier in all living organisms.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: "It is the cell's primary energy molecule containing three phosphate groups.",
       },
       {
@@ -1087,8 +1087,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C) Haemoglobin
         explanation: 'Haemoglobin is the iron-containing protein in red blood cells that binds oxygen in the lungs and releases it into tissues.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It contains iron heme groups and binds to O2 molecules.',
       },
       {
@@ -1105,8 +1105,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) O negative
         explanation: 'O negative red blood cells lack A, B, and Rh surface antigens, meaning they can safely be transfused into almost any recipient.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Type O has neither A nor B antigens, and negative means it lacks Rh factor.',
       },
       {
@@ -1123,8 +1123,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 3, // D) Mitochondrion
         explanation: 'Mitochondria are known as the powerhouses of the cell because they generate most of the chemical energy (ATP) through cellular respiration.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Famous biology meme: the powerhouse of the cell generating ATP.',
       },
       {
@@ -1141,8 +1141,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) To stop bleeding
         explanation: 'Blood clotting (hemostasis) creates platelet and fibrin mesh plugs to prevent excessive blood loss when blood vessels are damaged.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Hemostasis seals broken blood vessels to prevent blood loss.',
       },
     ],
@@ -1178,8 +1178,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 1, // B) House
       explanation: 'A house is a residential building designed with rooms and walls for people to live in.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: 'A permanent dwelling place where families live.',
     },
     challenges: [
@@ -1197,8 +1197,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) House
         explanation: 'A house is a residential building designed with rooms and walls for people to live in.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'A permanent dwelling place where families live.',
       },
       {
@@ -1215,8 +1215,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Blueprint
         explanation: 'A blueprint is a detailed technical drawing or architectural design plan specifying measurements, layouts, and construction specifications.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'A technical drawing with precise dimensions printed on blue or white paper.',
       },
       {
@@ -1233,8 +1233,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Column
         explanation: 'A column (or pillar) is a vertical structural element that transmits the weight of the structure above to other structural elements below.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'A vertical pillar or post supporting roofs and beams.',
       },
       {
@@ -1251,8 +1251,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Foundation
         explanation: 'The foundation is the lowest substructure part of a building that anchors it to the ground and distributes its weight safely into the earth.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'The bedrock and concrete underground base upon which all structures stand.',
       },
       {
@@ -1269,8 +1269,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Building
         explanation: 'A building is an enclosed structure with walls and a roof that serves diverse purposes including residences, schools, hospitals, and offices.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'A general term for any permanent man-made structure with walls and a roof.',
       },
     ],
@@ -1306,8 +1306,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 0, // A
       explanation: 'Oration is the formal practice and delivery of eloquent, persuasive, or ceremonial public speeches.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: 'It refers to giving a formal, persuasive speech to an audience.',
     },
     challenges: [
@@ -1325,8 +1325,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A
         explanation: 'Oration is the formal practice and delivery of eloquent, persuasive, or ceremonial public speeches.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It refers to giving a formal, persuasive speech to an audience.',
       },
       {
@@ -1343,8 +1343,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C
         explanation: 'Narration recounts events and drives temporal progression, while description provides sensory details to paint a vivid mental image.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Narration handles "what happens next" (action), while description handles "what it looks like" (sensory).',
       },
       {
@@ -1361,8 +1361,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 3, // D
         explanation: 'Ethos appeals to ethics and speaker credibility, Pathos appeals to emotional resonance, and Logos appeals to rational logic and evidence.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Ethos = Ethics/Credibility, Pathos = Passion/Emotion, Logos = Logic/Reasoning.',
       },
       {
@@ -1379,8 +1379,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B
         explanation: 'Dramatic irony occurs when the audience understands the true circumstances or impending danger, but the character on stage remains unaware.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'The audience knows the secret or danger before the character does.',
       },
       {
@@ -1397,8 +1397,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C
         explanation: 'Body language, open posture, and purposeful gestures enhance speech delivery by emphasizing key points and conveying authentic emotion.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Gestures and expressions reinforce and clarify what you are saying.',
       },
     ],
@@ -1435,7 +1435,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 0,
       explanation: 'Capacitive soil moisture sensors measure changes in dielectric permittivity due to water content without corroding like older resistive probes.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Capacitive sensing measures soil capacitance without exposing bare conductive metal to soil water.',
     },
     challenges: [
@@ -1454,7 +1454,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'Capacitive soil moisture sensors measure changes in dielectric permittivity due to water content without corroding like older resistive probes.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Capacitive sensing measures soil capacitance without exposing bare conductive metal to soil water.',
       },
       {
@@ -1472,7 +1472,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'NDVI (Normalized Difference Vegetation Index) quantifies crop health by contrasting high near-infrared reflectance of healthy chlorophyll with high absorption in the red band.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'NDVI stands for Normalized Difference Vegetation Index.',
       },
       {
@@ -1490,7 +1490,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Aeroponics is the process of growing plants in an air/mist environment without soil or an aggregate medium, maximizing root oxygenation and nutrient absorption.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The prefix \'Aero-\' indicates roots suspended in air/mist.',
       },
       {
@@ -1508,7 +1508,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'N-P-K stands for Nitrogen (N, for vegetative foliage growth), Phosphorus (P, for root development and flowering), and Potassium (K, for water regulation and disease resistance).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'K is the chemical symbol for Potassium (from Neo-Latin Kalium).',
       },
       {
@@ -1526,7 +1526,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Drip irrigation applies water slowly and directly to the plant root zone through emitters, drastically minimizing evaporation, runoff, and weed proliferation.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Direct targeted application at the soil line prevents water from evaporating into the air.',
       },
     ],
@@ -1563,7 +1563,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 1,
       explanation: 'According to Ohm\'s Law (I = V / R), current I = 24 Volts / 8 Ohms = 3 Amperes.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Current equals voltage divided by resistance: I = V / R.',
     },
     challenges: [
@@ -1582,7 +1582,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'According to Ohm\'s Law (I = V / R), current I = 24 Volts / 8 Ohms = 3 Amperes.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Current equals voltage divided by resistance: I = V / R.',
       },
       {
@@ -1600,7 +1600,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'Faraday\'s Law of Electromagnetic Induction states that any change in magnetic flux through a circuit induces an electromotive force (EMF) proportional to the rate of change.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Michael Faraday discovered this principle governing electric generators and transformers.',
       },
       {
@@ -1618,7 +1618,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'In a purely inductive AC circuit, voltage leads current by 90 degrees (π/2 radians), remembered by the classic mnemonic ELI (Voltage E leads Current I in an Inductor L).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Remember the acronym ELI the ICE man: in an inductor (L), E (voltage) leads I (current).',
       },
       {
@@ -1636,7 +1636,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'A diode conducts forward current when forward-biased beyond its barrier potential (e.g., ~0.7V for silicon) and blocks reverse current, acting as a one-way electrical valve.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'It has an anode and cathode and is used in AC-to-DC rectifier circuits.',
       },
       {
@@ -1654,7 +1654,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'Voltage transformation ratio is V2 = V1 × (N2 / N1) = 230V × (100 / 1000) = 23V AC.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The voltage steps down by the same ratio as the turns: 10:1 ratio.',
       },
     ],
@@ -1691,7 +1691,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 1,
       explanation: 'Servo motors combine a DC motor, reduction gear train, position sensor, and control circuit to rotate to and hold a commanded angular position precisely.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Servos are commanded with PWM pulses to hold a specific angle (e.g., 0° to 180°).',
     },
     challenges: [
@@ -1710,7 +1710,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Servo motors combine a DC motor, reduction gear train, position sensor, and control circuit to rotate to and hold a commanded angular position precisely.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Servos are commanded with PWM pulses to hold a specific angle (e.g., 0° to 180°).',
       },
       {
@@ -1728,7 +1728,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'SLAM stands for Simultaneous Localization and Mapping—the computational method by which an autonomous agent builds a map of an unknown environment while simultaneously tracking its current location.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Used by self-driving cars, robotic vacuum cleaners, and planetary rovers to map and navigate.',
       },
       {
@@ -1746,7 +1746,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'The Integral (I) term integrates error over time; even a minute persistent error accumulates, driving the controller output to drive steady-state error down to zero.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The Integral term accumulates past errors until the system reaches zero steady-state error.',
       },
       {
@@ -1764,7 +1764,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Because the sound wave travels to the obstacle and bounces back, total travel distance is 2d = v × t = 340 m/s × 0.002 s = 0.68 m. The distance to the obstacle is 0.68 / 2 = 0.34 m (34 cm).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Divide the round-trip distance by 2 to get the one-way distance to the obstacle.',
       },
       {
@@ -1782,7 +1782,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'An end-effector in 3D space possesses 6 degrees of freedom: 3 translational (X, Y, Z) and 3 rotational (roll, pitch, yaw). Thus, a minimum of 6 DOF is needed for arbitrary positioning and pointing.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: '3 degrees for position + 3 degrees for orientation = 6 total degrees of freedom.',
       },
     ],
@@ -1818,8 +1818,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       ],
       correctOptionIndex: 1, // B) Return on Investment
       explanation: 'ROI stands for Return on Investment, a performance measure used to evaluate the efficiency or profitability of an investment.',
-      basePoints: 15,
-      timeBonusLimitSec: 8,
+      basePoints: 20,
+      timeBonusLimitSec: 10,
       hint: 'It measures the financial return generated on capital invested.',
     },
     challenges: [
@@ -1837,8 +1837,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) Return on Investment
         explanation: 'ROI stands for Return on Investment, a performance measure used to evaluate the efficiency or profitability of an investment.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'It measures the financial return generated on capital invested.',
       },
       {
@@ -1855,8 +1855,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C) Profit decreases
         explanation: 'Profit = Revenue - Expenses. When expenses grow faster than revenue, net profit decreases.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Profit is Revenue minus Expenses; if expenses rise faster, profit drops.',
       },
       {
@@ -1873,8 +1873,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 0, // A) Initial Public Offering
         explanation: 'An Initial Public Offering (IPO) refers to offering shares of a private corporation to the public in a new stock issuance.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'When a private company goes public on the stock exchange for the first time.',
       },
       {
@@ -1891,8 +1891,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 2, // C) A significant change in a company's business strategy or model
         explanation: 'A pivot occurs when a company shifts its business model, target audience, or product focus in response to market feedback.',
-        basePoints: 10,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'A fundamental shift in strategic direction or business model.',
       },
       {
@@ -1909,8 +1909,8 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         ],
         correctOptionIndex: 1, // B) When two companies combine to form a single business entity
         explanation: 'A merger is an agreement that unites two existing companies into one new company.',
-        basePoints: 15,
-        timeBonusLimitSec: 8,
+        basePoints: 20,
+        timeBonusLimitSec: 10,
         hint: 'Combining two separate corporate entities into a single unified business.',
       },
     ],
@@ -1947,7 +1947,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 0,
       explanation: 'Airfoil camber and angle of attack accelerate airflow over the upper curved surface, creating lower static pressure above the wing than below it, producing net upward lift.',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Higher fluid velocity over the top camber surface corresponds to lower static pressure.',
     },
     challenges: [
@@ -1966,7 +1966,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 0,
         explanation: 'Airfoil camber and angle of attack accelerate airflow over the upper curved surface, creating lower static pressure above the wing than below it, producing net upward lift.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Higher fluid velocity over the top camber surface corresponds to lower static pressure.',
       },
       {
@@ -1984,7 +1984,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'Ailerons move differentially (one up, one down) on the outer trailing edges of wings to alter lift and bank the aircraft into a roll.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Aileron deflection creates differential lift on opposing wings, rolling the airplane.',
       },
       {
@@ -2002,7 +2002,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Quadcopter yaw is controlled by torque imbalance: speeding up the two counter-clockwise (CCW) rotors while slowing down the two clockwise (CW) rotors maintains equal total lift while producing a net clockwise reaction torque on the chassis.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Newton\'s third law: spinning counter-clockwise rotors faster creates a clockwise reaction torque.',
       },
       {
@@ -2020,7 +2020,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'The Mach number (M = v / a) categorizes flight regimes into subsonic (M < 1), transonic (0.8 < M < 1.2), supersonic (1 < M < 5), and hypersonic (M > 5).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Named after Austrian physicist Ernst Mach.',
       },
       {
@@ -2038,7 +2038,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'In steady level flight, four forces are in balance: Lift balances Weight (L = W), and Thrust balances Drag (T = D).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Lift opposes Weight; Thrust opposes Drag.',
       },
     ],
@@ -2075,7 +2075,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
       correctOptionIndex: 2,
       explanation: 'Earth\'s escape velocity from the surface is approximately 11.2 km/s (around 40,320 km/h or 25,050 mph).',
       basePoints: 20,
-      timeBonusLimitSec: 15,
+      timeBonusLimitSec: 10,
       hint: 'Escape velocity is approximately √2 times the orbital speed (√2 × 7.9 km/s ≈ 11.2 km/s).',
     },
     challenges: [
@@ -2094,7 +2094,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'Earth\'s escape velocity from the surface is approximately 11.2 km/s (around 40,320 km/h or 25,050 mph).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Escape velocity is approximately √2 times the orbital speed (√2 × 7.9 km/s ≈ 11.2 km/s).',
       },
       {
@@ -2112,7 +2112,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Kepler\'s First Law states that the orbit of each planet is an ellipse with the Sun located at one of the two focal points.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Planetary orbits are slightly flattened circles known as ellipses.',
       },
       {
@@ -2130,7 +2130,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 2,
         explanation: 'When a core exceeding the Tolman-Oppenheimer-Volkoff limit collapses, gravity overcomes all degeneracy pressures, forming a black hole bounded by an event horizon.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The escape velocity at its boundary exceeds the speed of light.',
       },
       {
@@ -2148,7 +2148,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'A light-year is the distance light travels in one vacuum year: c × 1 year ≈ (299,792,458 m/s) × (31,557,600 s) ≈ 9.46 × 10¹² km (9.46 trillion kilometers).',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'Nearly 9.5 trillion kilometers (or 5.88 trillion miles).',
       },
       {
@@ -2166,7 +2166,7 @@ export const DOMAIN_PORTALS: DomainPortal[] = [
         correctOptionIndex: 1,
         explanation: 'Jupiter is the largest planet in our solar system, with a mass more than two and a half times that of all the other planets combined, and is renowned for the Great Red Spot.',
         basePoints: 20,
-        timeBonusLimitSec: 15,
+        timeBonusLimitSec: 10,
         hint: 'The 5th planet from the Sun, named after the king of Roman gods.',
       },
     ],

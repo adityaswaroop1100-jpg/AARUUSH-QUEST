@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Compass, RotateCw, RotateCcw, Square, Sparkles, CheckCircle, XCircle, ArrowRight, Lightbulb, Trophy, RotateCcw as RetryIcon, MapPin } from 'lucide-react';
-import { DomainPortal } from '../types';
+import { DomainPortal, AnswerRecordResult } from '../types';
 import { ChallengeVisualizer } from './Visualizers';
 import { DomainLogo } from './DomainLogos';
 import { sound } from '../utils/audio';
@@ -12,8 +12,9 @@ interface ChallengeModalProps {
   score: number;
   completedCount: number;
   totalPortals: number;
-  onRecordAnswer: (portalId: string, isCorrect: boolean, timeSpentSec: number, points?: number) => number;
-  onAdvanceQuestion?: (totalQuestions: number) => void;
+  solvedQuestionIndices?: number[];
+  onRecordAnswer: (portalId: string, questionIndex: number, isCorrect: boolean, timeSpentSec: number, points?: number) => AnswerRecordResult;
+  onAdvanceQuestion?: (nextIndex: number) => void;
   onBackToMap: () => void;
   onUseHint: () => boolean;
   hintCount: number;
@@ -26,6 +27,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   score,
   completedCount,
   totalPortals,
+  solvedQuestionIndices = [],
   onRecordAnswer,
   onAdvanceQuestion,
   onBackToMap,
@@ -42,7 +44,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [answeredState, setAnsweredState] = useState<'pending' | 'correct' | 'wrong'>('pending');
   const [showHint, setShowHint] = useState<boolean>(false);
-  const [earnedThisQuestion, setEarnedThisQuestion] = useState<number>(0);
+  const [lastResult, setLastResult] = useState<AnswerRecordResult | null>(null);
 
   const startTime = useRef(Date.now());
   const autoReturnTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -74,13 +76,13 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     if (isCorrect) {
       sound.playCorrect();
       setAnsweredState('correct');
-      // Record answer and update score/portal in App.tsx immediately!
-      const earned = onRecordAnswer(portal.id, true, timeSpentSec, qPoints);
-      setEarnedThisQuestion(earned);
+      const result = onRecordAnswer(portal.id, questionIndex, true, timeSpentSec, qPoints);
+      setLastResult(result);
     } else {
       sound.playWrong();
       setAnsweredState('wrong');
-      onRecordAnswer(portal.id, false, timeSpentSec, 0);
+      const result = onRecordAnswer(portal.id, questionIndex, false, timeSpentSec, 0);
+      setLastResult(result);
     }
 
     // Fast, snappy auto-advance for both right and wrong answers!
@@ -105,14 +107,15 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
     }
     sound.playSelect();
     if (questionIndex + 1 < questionsList.length) {
-      setQuestionIndex((prev) => prev + 1);
+      const nextIdx = questionIndex + 1;
+      setQuestionIndex(nextIdx);
       setSelectedOption(null);
       setAnsweredState('pending');
       setShowHint(false);
-      setEarnedThisQuestion(0);
+      setLastResult(null);
       startTime.current = Date.now();
       if (onAdvanceQuestion) {
-        onAdvanceQuestion(questionsList.length);
+        onAdvanceQuestion(nextIdx);
       }
     } else {
       onBackToMap();
@@ -236,21 +239,26 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             </button>
           </div>
 
-          {/* Question Step Indicators if multiple */}
+          {/* Question Step Indicators */}
           {questionsList.length > 1 && (
-            <div className="w-full flex gap-1.5 mb-3">
-              {questionsList.map((_, qIdx) => (
-                <div
-                  key={qIdx}
-                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                    qIdx < questionIndex
-                      ? 'bg-green-400'
-                      : qIdx === questionIndex
-                      ? 'bg-cyan-400 shadow-[0_0_8px_#00f0ff]'
-                      : 'bg-white/10'
-                  }`}
-                />
-              ))}
+            <div className="w-full flex items-center gap-1.5 mb-3">
+              {questionsList.map((_, qIdx) => {
+                const isSolved = solvedQuestionIndices.includes(qIdx);
+                const isCurrent = qIdx === questionIndex;
+                return (
+                  <div
+                    key={qIdx}
+                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 relative ${
+                      isSolved
+                        ? 'bg-green-400 shadow-[0_0_8px_#4ade80]'
+                        : isCurrent
+                        ? 'bg-cyan-400 shadow-[0_0_10px_#00f0ff]'
+                        : 'bg-white/15'
+                    }`}
+                    title={`Question ${qIdx + 1}: ${isSolved ? 'Solved' : isCurrent ? 'Active' : 'Pending'}`}
+                  />
+                );
+              })}
             </div>
           )}
 
@@ -361,18 +369,56 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
             >
               <div className="flex items-center justify-between font-bold text-sm mb-1.5">
                 <span className="flex items-center gap-1.5">
-                  {answeredState === 'correct'
-                    ? (questionIndex + 1 < questionsList.length
-                        ? `✅ QUESTION ${questionIndex + 1} OF ${questionsList.length} SOLVED! (+${earnedThisQuestion} PTS)`
-                        : `🎉 ALL ${questionsList.length} QUESTIONS COMPLETED! (+${earnedThisQuestion} PTS)`)
-                    : (questionIndex + 1 < questionsList.length
-                        ? `⚠️ INCORRECT (-0 PTS)`
-                        : `⚠️ INCORRECT // ALL QUESTIONS COMPLETE`)}
+                  {lastResult?.isDuplicate ? (
+                    `✓ QUESTION ${questionIndex + 1} ALREADY SOLVED (+0 PTS)`
+                  ) : lastResult?.isDomainMastered ? (
+                    `👑 DOMAIN MASTERED! ALL QUESTIONS COMPLETED! (+${lastResult.earnedPoints} PTS)`
+                  ) : answeredState === 'correct' ? (
+                    `✅ QUESTION ${questionIndex + 1} OF ${questionsList.length} SOLVED! (+${lastResult?.earnedPoints || 0} PTS)`
+                  ) : (
+                    `⚠️ INCORRECT (-0 PTS)`
+                  )}
                 </span>
                 <span className="text-[11px] font-normal opacity-80">
-                  {questionIndex + 1 < questionsList.length ? 'Next question...' : 'Returning to map...'}
+                  {questionIndex + 1 < questionsList.length ? 'Auto-advancing...' : 'Returning to map...'}
                 </span>
               </div>
+
+              {/* Real-time Marks Breakdown */}
+              {answeredState === 'correct' && !lastResult?.isDuplicate && lastResult && (
+                <div className="flex flex-wrap items-center gap-1.5 my-2 py-1 px-2 bg-black/40 rounded border border-green-500/30 text-[11px]">
+                  <span className="font-bold text-white uppercase tracking-wider text-[10px]">
+                    MARKS BREAKDOWN:
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded bg-white/10 text-white font-semibold">
+                    +{lastResult.basePoints} Base
+                  </span>
+                  {lastResult.speedBonus > 0 && (
+                    <span className="px-1.5 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-500/40">
+                      ⚡ +{lastResult.speedBonus} Speed Bonus
+                    </span>
+                  )}
+                  {lastResult.streakBonus > 0 && (
+                    <span className="px-1.5 py-0.5 rounded bg-orange-950/80 text-orange-300 border border-orange-500/40">
+                      🔥 +{lastResult.streakBonus} Streak Bonus
+                    </span>
+                  )}
+                  {lastResult.domainClearBonus > 0 && (
+                    <span className="px-1.5 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40 font-bold">
+                      👑 +{lastResult.domainClearBonus} Domain Clearance
+                    </span>
+                  )}
+                  <span className="ml-auto text-amber-400 font-bold">
+                    = +{lastResult.earnedPoints} PTS
+                  </span>
+                </div>
+              )}
+
+              {lastResult?.isDuplicate && (
+                <div className="my-2 py-1 px-2 bg-cyan-950/50 rounded border border-cyan-500/30 text-cyan-200 text-[11px]">
+                  ℹ️ Question already secured in this quest. Replaying for practice (duplicate points disabled).
+                </div>
+              )}
               
               <p className="text-white/90 text-xs leading-relaxed mb-3">
                 {currentChallenge.explanation}

@@ -8,6 +8,7 @@ interface PortalsListViewProps {
   portals: DomainPortal[];
   completedPortals: string[];
   failedPortals: string[];
+  solvedQuestions?: Record<string, number[]>;
   onSelectPortal: (id: string) => void;
 }
 
@@ -15,13 +16,16 @@ export const PortalsListView: React.FC<PortalsListViewProps> = ({
   portals,
   completedPortals,
   failedPortals,
+  solvedQuestions = {},
   onSelectPortal,
 }) => {
   const [filter, setFilter] = useState<'ALL' | 'AVAILABLE' | 'COMPLETED'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredPortals = portals.filter((p) => {
-    const isCompleted = completedPortals.includes(p.id);
+    const domainSolved = solvedQuestions[p.id] || [];
+    const totalCount = p.challenges?.length || 5;
+    const isCompleted = completedPortals.includes(p.id) || domainSolved.length >= totalCount;
     if (filter === 'AVAILABLE' && isCompleted) return false;
     if (filter === 'COMPLETED' && !isCompleted) return false;
     if (searchQuery.trim()) {
@@ -82,10 +86,13 @@ export const PortalsListView: React.FC<PortalsListViewProps> = ({
       </div>
 
       {/* Grid of Domain Cards */}
+      {/* Grid of Domain Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         {filteredPortals.map((portal) => {
-          const isCompleted = completedPortals.includes(portal.id);
-          const isFailed = failedPortals.includes(portal.id);
+          const domainSolved = solvedQuestions[portal.id] || [];
+          const totalQuestions = portal.challenges?.length || 5;
+          const isCompleted = completedPortals.includes(portal.id) || domainSolved.length >= totalQuestions;
+          const isFailed = failedPortals.includes(portal.id) && !isCompleted;
 
           return (
             <div
@@ -142,9 +149,9 @@ export const PortalsListView: React.FC<PortalsListViewProps> = ({
 
               <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
                 <span className="font-mono text-[10px] text-amber-300 font-semibold">
-                  {portal.challenges && portal.challenges.length > 1
-                    ? `${portal.challenges.length} QUESTIONS • +${portal.challenges.reduce((sum, c) => sum + (c.basePoints || 10), 0)} PTS`
-                    : `+${portal.challenge.basePoints} PTS`}
+                  {domainSolved.length > 0 && !isCompleted
+                    ? `SOLVED ${domainSolved.length}/${totalQuestions} • +${totalQuestions * 20} PTS`
+                    : `${totalQuestions} QUESTIONS • +${totalQuestions * 20} PTS`}
                 </span>
 
                 <button
@@ -155,13 +162,20 @@ export const PortalsListView: React.FC<PortalsListViewProps> = ({
                   className={`px-3 py-1.5 rounded font-mono text-xs uppercase font-bold tracking-wider flex items-center gap-1.5 transition-all cursor-pointer ${
                     isCompleted
                       ? 'bg-[#ffd602]/20 border border-[#ffd602]/40 text-[#ffd602] hover:bg-[#ffd602]/30'
+                      : domainSolved.length > 0
+                      ? 'bg-cyan-500 hover:bg-cyan-400 text-cyan-950 shadow-[0_0_10px_rgba(0,240,255,0.4)]'
                       : 'bg-cyan-400 hover:bg-cyan-300 text-cyan-950 shadow-[0_0_10px_rgba(0,240,255,0.3)]'
                   }`}
                 >
                   {isCompleted ? (
                     <>
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      <span>REVISIT</span>
+                      <span>SECURED</span>
+                    </>
+                  ) : domainSolved.length > 0 ? (
+                    <>
+                      <Play className="w-3 h-3 fill-current" />
+                      <span>RESUME</span>
                     </>
                   ) : (
                     <>

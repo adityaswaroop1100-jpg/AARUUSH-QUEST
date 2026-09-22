@@ -6,6 +6,8 @@ interface QuestCompleteProps {
   score: number;
   completedCount: number;
   totalPortals: number;
+  totalSolvedQuestions?: number;
+  totalQuestions?: number;
   totalTimeSec: number;
   onPlayAgain: () => void;
   onViewSchedule: () => void;
@@ -15,6 +17,8 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
   score,
   completedCount,
   totalPortals,
+  totalSolvedQuestions = 0,
+  totalQuestions = 85,
   totalTimeSec,
   onPlayAgain,
   onViewSchedule,
@@ -27,22 +31,22 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
   }, []);
 
   const getRank = () => {
-    if (completedCount >= 17) return 'AARUUSH CHAMPION';
-    if (completedCount >= 12) return 'CYBER PRODIGY';
-    if (completedCount >= 7) return 'GRID TACTICIAN';
+    if (score >= 1400 || completedCount >= 17) return 'AARUUSH CHAMPION';
+    if (score >= 1000 || completedCount >= 12) return 'CYBER PRODIGY';
+    if (score >= 600 || completedCount >= 7) return 'GRID TACTICIAN';
     return 'TECH INITIATE';
   };
 
   const getPercentile = () => {
-    if (completedCount >= 17) return 'Global Top 5%';
-    if (completedCount >= 12) return 'Global Top 15%';
-    if (completedCount >= 7) return 'Global Top 35%';
+    if (score >= 1400 || completedCount >= 17) return 'Global Top 5% • Master Tier';
+    if (score >= 1000 || completedCount >= 12) return 'Global Top 15% • Elite Tier';
+    if (score >= 600 || completedCount >= 7) return 'Global Top 35% • Specialist Tier';
     return 'Grid Participant';
   };
 
   const handleShare = () => {
     sound.playSelect();
-    const shareText = `⚡ I just conquered ${completedCount}/${totalPortals} portals on AARUUSH QUEST with a score of ${score} pts! Rank: ${getRank()} 🏆 #Aaruush2026 #SRMIST`;
+    const shareText = `⚡ I just conquered AARUUSH QUEST with ${score} PTS (${completedCount}/${totalPortals} domains secured, ${totalSolvedQuestions}/${totalQuestions} MCQs solved)! Rank: ${getRank()} 🏆 #Aaruush2026 #SRMIST`;
     
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareText);
@@ -102,10 +106,11 @@ export const QuestCompleteScreen: React.FC<QuestCompleteProps> = ({
             <RotateCcw className="w-3.5 h-3.5 text-white/40" />
           </div>
           <div className="font-['Space_Grotesk',sans-serif] text-3xl md:text-4xl font-bold text-white tracking-tight">
-            {score}
+            {score} PTS
           </div>
-          <div className="font-mono text-xs text-white/50 mt-1">
-            {getPercentile()}
+          <div className="font-mono text-xs text-white/50 mt-1 flex items-center justify-between">
+            <span>{getPercentile()}</span>
+            <span className="text-cyan-300 font-semibold">{totalSolvedQuestions} / {totalQuestions} MCQs Solved</span>
           </div>
         </div>
 
