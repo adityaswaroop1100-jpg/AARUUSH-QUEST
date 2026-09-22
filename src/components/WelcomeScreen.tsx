@@ -3,6 +3,7 @@ import { Timer, Flag, Rocket, Volume2, VolumeX, Info, Calendar, User } from 'luc
 import { sound } from '../utils/audio';
 import { ParticipantModal } from './ParticipantModal';
 import { ParticipantFormData } from '../utils/supabase/participants';
+import { AaruushLogo } from './AaruushLogo';
 
 interface WelcomeScreenProps {
   onStartQuest: (participant: ParticipantFormData) => void;
@@ -167,12 +168,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               {/* Subtle Solar Ring Corona */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 md:w-32 md:h-32 rounded-full border border-[#ffd602]/30 shadow-[0_0_20px_rgba(255,214,2,0.35)] pointer-events-none" />
 
-              {/* Logo Emblem */}
-              <img
-                alt="Aaruush Logo"
-                className="relative z-10 w-28 md:w-36 h-auto mx-auto object-contain filter drop-shadow-[0_0_20px_rgba(255,214,2,0.7)] animate-pulse-glow"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcnDZtIgxYsJkIok4wSdJNN7Ic_e9h03oJ89fvWdyZ3_lx2oF-lBhCXhPtQI_OgM9vko2Nnt-o5iTXgrZFe9lMsl81KLNfVHR7BERRgfWjFkxmRGj102GhIHwjhgLVXmOx90-zqeyW9P6rSGg5ikrDF8Xv12IUEXqaVP6Woc9XoQ3c5yXMw8yTMu0FRhyLJP5O1U4R5iedknOCLZMro_tRmcshhaibwc4azfbZ6ZUQi0a4HIFg_6yP-QPU2t1DhYGgzPg"
-              />
+              {/* Official Aaruush Vector Logo Emblem (Clean Vector, No Black Box) */}
+              <AaruushLogo className="relative z-10 w-28 md:w-36 h-28 md:h-36 mx-auto" />
             </div>
             
             {/* Title with Orbitron font and glowing colors */}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, CreditCard, Mail, Phone, Fingerprint, Rocket, ArrowLeft, AlertCircle, Loader2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { ParticipantFormData, getStoredParticipant } from '../utils/supabase/participants';
 import { sound } from '../utils/audio';
+import { AaruushLogo } from './AaruushLogo';
 
 interface ParticipantLoginPageProps {
   onStartQuest: (data: ParticipantFormData) => void;
@@ -153,11 +154,7 @@ export const ParticipantLoginPage: React.FC<ParticipantLoginPageProps> = ({
                 </svg>
               </div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 md:w-28 md:h-28 rounded-full border border-[#ffd602]/30 shadow-[0_0_20px_rgba(255,214,2,0.35)] pointer-events-none" />
-              <img
-                alt="Aaruush Logo"
-                className="relative z-10 w-24 md:w-32 h-auto mx-auto object-contain filter drop-shadow-[0_0_20px_rgba(255,214,2,0.7)] animate-pulse-glow"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcnDZtIgxYsJkIok4wSdJNN7Ic_e9h03oJ89fvWdyZ3_lx2oF-lBhCXhPtQI_OgM9vko2Nnt-o5iTXgrZFe9lMsl81KLNfVHR7BERRgfWjFkxmRGj102GhIHwjhgLVXmOx90-zqeyW9P6rSGg5ikrDF8Xv12IUEXqaVP6Woc9XoQ3c5yXMw8yTMu0FRhyLJP5O1U4R5iedknOCLZMro_tRmcshhaibwc4azfbZ6ZUQi0a4HIFg_6yP-QPU2t1DhYGgzPg"
-              />
+              <AaruushLogo className="relative z-10 w-24 md:w-32 h-24 md:h-32 mx-auto" />
             </div>
 
             <h1 className="font-['Orbitron',sans-serif] text-[36px] sm:text-[46px] leading-[1.02] font-black tracking-tight mb-1 uppercase drop-shadow-[0_4px_25px_rgba(0,0,0,0.9)]">

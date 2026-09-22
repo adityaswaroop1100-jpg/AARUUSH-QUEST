@@ -151,3 +151,40 @@ export const updateParticipantFinalScore = (
     rank: string;
   }
 ) => updateParticipantLiveScore(null, participant, scoreData);
+
+export interface LeaderboardPlayer {
+  id: string;
+  name: string;
+  registration_number: string;
+  participant_id: string;
+  score: number;
+  completed_portals: number;
+  total_solved_questions: number;
+  time_spent_seconds: number;
+  rank: string;
+  created_at: string;
+}
+
+/**
+ * Fetch all participants from Supabase ordered by highest score, most completed portals, and lowest time spent
+ */
+export async function fetchLeaderboard(): Promise<LeaderboardPlayer[]> {
+  try {
+    const { data, error } = await supabase
+      .from('participants')
+      .select('id, name, registration_number, participant_id, score, completed_portals, total_solved_questions, time_spent_seconds, rank, created_at')
+      .order('score', { ascending: false })
+      .order('completed_portals', { ascending: false })
+      .order('time_spent_seconds', { ascending: true });
+
+    if (error) {
+      console.warn('Leaderboard fetch warning:', error.message);
+      return [];
+    }
+
+    return (data as LeaderboardPlayer[]) || [];
+  } catch (err: any) {
+    console.warn('Leaderboard network warning:', err);
+    return [];
+  }
+}
