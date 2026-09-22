@@ -22,17 +22,9 @@ const LOCAL_STORAGE_KEY = 'aaruush_quest_participant';
 const LOCAL_STORAGE_ID_KEY = 'aaruush_quest_participant_db_id';
 
 /**
- * Get previously saved participant details from localStorage to pre-fill the form
+ * Credentials are not pre-filled - every player enters fresh details
  */
 export function getStoredParticipant(): ParticipantFormData | null {
-  try {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (err) {
-    console.warn('Failed to retrieve stored participant:', err);
-  }
   return null;
 }
 

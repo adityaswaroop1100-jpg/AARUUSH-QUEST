@@ -25,13 +25,16 @@ export const ParticipantModal: React.FC<ParticipantModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // Load previously saved participant details
+  // Reset participant details to empty every time it opens
   useEffect(() => {
     if (isOpen) {
-      const stored = getStoredParticipant();
-      if (stored) {
-        setFormData(stored);
-      }
+      setFormData({
+        name: '',
+        registration_number: '',
+        srm_mail_id: '',
+        contact_number: '',
+        participant_id: '',
+      });
       setErrors({});
       setIsSubmitting(false);
     }

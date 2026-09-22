@@ -26,10 +26,18 @@ export const ParticipantLoginPage: React.FC<ParticipantLoginPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
 
+  // Always initialize with empty credentials every time user enters this page
   useEffect(() => {
-    const existing = currentParticipant || getStoredParticipant();
-    if (existing) setFormData(existing);
-  }, [currentParticipant]);
+    setFormData({
+      name: '',
+      registration_number: '',
+      srm_mail_id: '',
+      contact_number: '',
+      participant_id: '',
+    });
+    setErrors({});
+    setIsSubmitting(false);
+  }, []);
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};

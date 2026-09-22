@@ -26,11 +26,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
   const handleStart = () => {
     sound.playSelect();
-    if (participant) {
-      onStartQuest(participant);
-    } else {
-      setShowParticipantModal(true);
-    }
+    onOpenLogin();
   };
 
   const handleParticipantSubmit = (data: ParticipantFormData) => {
@@ -76,7 +72,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           >
             <User className="w-3.5 h-3.5 text-cyan-400" />
             <span className="font-['Rajdhani',sans-serif] font-bold tracking-wider text-sm">
-              {participant ? participant.name.split(' ')[0].toUpperCase() : 'ENTER DETAILS'}
+              ENTER DETAILS
             </span>
           </button>
           <button
@@ -228,26 +224,6 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
           {/* Call to Action Buttons */}
           <div className="w-full max-w-md flex flex-col gap-3">
-            {participant && (
-              <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#0c0c14]/90 border border-cyan-500/40 text-xs font-mono text-cyan-300 shadow-[0_0_15px_rgba(0,240,255,0.15)]">
-                <span className="flex items-center gap-2 truncate">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-white/60 uppercase">AUTHENTICATED:</span>
-                  <strong className="text-white truncate">{participant.name}</strong>
-                  <span className="text-amber-400 font-bold shrink-0">({participant.participant_id})</span>
-                </span>
-                <button
-                  onClick={() => {
-                    sound.playClick();
-                    onOpenLogin();
-                  }}
-                  className="text-cyan-400 hover:text-cyan-300 underline font-bold text-xs ml-2 shrink-0 cursor-pointer"
-                >
-                  EDIT
-                </button>
-              </div>
-            )}
-
             <button
               onClick={handleStart}
               className="w-full font-['Orbitron',sans-serif] text-[16px] md:text-[18px] uppercase tracking-widest bg-gradient-to-r from-[#00f0ff] via-[#7df4ff] to-[#00d0e0] text-[#00282c] px-8 py-5 md:py-5.5 shadow-[0_0_25px_rgba(0,240,255,0.6)] hover:shadow-[0_0_40px_rgba(0,240,255,0.9)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 group rounded-xl font-black cursor-pointer border border-cyan-200/50"
@@ -265,7 +241,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               className="w-full font-['Rajdhani',sans-serif] text-[15px] md:text-[16px] font-bold uppercase tracking-wider bg-[#0c0c14]/85 hover:bg-[#151522] text-cyan-300 hover:text-white px-5 py-3.5 rounded-xl border border-cyan-500/35 hover:border-cyan-400 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg"
             >
               <User className="w-4 h-4 text-cyan-400" />
-              <span>{participant ? 'CHANGE PARTICIPANT DETAILS (5 COMPONENTS)' : 'ENTER PARTICIPANT DETAILS (5 COMPONENTS)'}</span>
+              <span>ENTER PARTICIPANT DETAILS (5 COMPONENTS)</span>
             </button>
           </div>
         </div>

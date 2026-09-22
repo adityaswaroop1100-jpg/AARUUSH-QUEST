@@ -19,7 +19,7 @@ export default function App() {
   const [selectedPortalId, setSelectedPortalId] = useState<string | null>(null);
 
   // Participant State
-  const [currentParticipant, setCurrentParticipant] = useState<ParticipantFormData | null>(() => getStoredParticipant());
+  const [currentParticipant, setCurrentParticipant] = useState<ParticipantFormData | null>(null);
   const [isSyncingScore, setIsSyncingScore] = useState<boolean>(false);
   const [scoreSynced, setScoreSynced] = useState<boolean>(false);
   
@@ -357,8 +357,6 @@ export default function App() {
             handleStartQuest(data);
           }}
           onBackToWelcome={() => {
-            const updated = getStoredParticipant();
-            if (updated) setCurrentParticipant(updated);
             setScreen('welcome');
           }}
         />
@@ -557,7 +555,10 @@ export default function App() {
           participant={currentParticipant}
           isSyncingScore={isSyncingScore}
           scoreSynced={scoreSynced}
-          onPlayAgain={() => setScreen('welcome')}
+          onPlayAgain={() => {
+            setCurrentParticipant(null);
+            setScreen('welcome');
+          }}
           onViewSchedule={() => setShowScheduleModal(true)}
         />
       )}
