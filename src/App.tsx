@@ -611,6 +611,7 @@ export default function App() {
           }}
           onUseHint={handleUseHint}
           hintCount={powerUps.neuralHint}
+          streak={streak}
         />
       )}
 

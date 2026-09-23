@@ -3,6 +3,7 @@ import { Compass, RotateCw, RotateCcw, Square, Sparkles, CheckCircle, XCircle, A
 import { DomainPortal, AnswerRecordResult } from '../types';
 import { ChallengeVisualizer } from './Visualizers';
 import { DomainLogo } from './DomainLogos';
+import { CyberCombatArena } from './CyberCombatArena';
 import { sound } from '../utils/audio';
 
 interface ChallengeModalProps {
@@ -18,6 +19,7 @@ interface ChallengeModalProps {
   onBackToMap: () => void;
   onUseHint: () => boolean;
   hintCount: number;
+  streak?: number;
 }
 
 export const ChallengeModal: React.FC<ChallengeModalProps> = ({
@@ -33,6 +35,7 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
   onBackToMap,
   onUseHint,
   hintCount,
+  streak = 0,
 }) => {
   const questionsList = (portal.challenges && portal.challenges.length > 0)
     ? portal.challenges
@@ -285,6 +288,17 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
               {currentChallenge.instructions}
             </div>
           )}
+
+          {/* Cyber Combat Arena: Hero Striker Character vs Guardian Boss */}
+          <CyberCombatArena
+            portalName={portal.name}
+            portalColor={portal.color}
+            answeredState={answeredState}
+            lastResult={lastResult}
+            questionNumber={questionIndex}
+            totalQuestions={questionsList.length}
+            streak={streak}
+          />
 
           {/* Interactive Visualizer */}
           <ChallengeVisualizer type={currentChallenge.visualType} title={currentChallenge.title} />
