@@ -123,23 +123,25 @@ export default function App() {
   }, [isTimerActive, screen, score, completedPortals, solvedQuestions]);
 
   // Start Quest
-  const handleStartQuest = (participantData?: ParticipantFormData) => {
+  const handleStartQuest = async (participantData?: ParticipantFormData) => {
     if (participantData) {
       setCurrentParticipant(participantData);
       currentParticipantRef.current = participantData;
       setParticipantDbId(null);
       participantDbIdRef.current = null;
+      try {
+        localStorage.removeItem('aaruush_quest_participant_db_id');
+      } catch (e) {}
 
-      registerParticipant(participantData)
-        .then((res) => {
-          if (res.id) {
-            setParticipantDbId(res.id);
-            participantDbIdRef.current = res.id;
-          }
-        })
-        .catch((err) => {
-          console.warn('Participant DB registration warning:', err);
-        });
+      try {
+        const res = await registerParticipant(participantData);
+        if (res.id) {
+          setParticipantDbId(res.id);
+          participantDbIdRef.current = res.id;
+        }
+      } catch (err) {
+        console.warn('Participant DB registration warning:', err);
+      }
     }
     setScoreSynced(false);
     setIsSyncingScore(false);
@@ -163,6 +165,20 @@ export default function App() {
     setSelectedPortalId(null);
     setScreen('map');
   };
+
+  // Prevent data loss if tab is closed or reloaded mid-game
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const p = currentParticipantRef.current;
+      const dbId = participantDbIdRef.current;
+      if (p || dbId) {
+        const allSolved = Object.values(solvedQuestions).reduce((acc, l) => acc + l.length, 0);
+        syncScoreToDatabase(score, completedPortals.length, allSolved, timeRemaining);
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [score, completedPortals, solvedQuestions, timeRemaining]);
 
   // Sync score with Supabase database when quest is completed
   useEffect(() => {
