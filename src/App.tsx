@@ -13,6 +13,10 @@ import { sound } from './utils/audio';
 import { ParticipantFormData, registerParticipant, updateParticipantLiveScore, getStoredParticipant } from './utils/supabase/participants';
 import { ParticipantLoginPage } from './components/ParticipantLoginPage';
 
+// Helper to reliably count total solved questions across all domains
+const getTotalSolvedCount = (solvedMap: Record<string, number[]>): number =>
+  (Object.values(solvedMap) as number[][]).reduce((acc: number, l: number[]) => acc + (Array.isArray(l) ? l.length : 0), 0);
+
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>('welcome');
   const [activeTab, setActiveTab] = useState<AppTab>('map');
@@ -109,7 +113,7 @@ export default function App() {
           }
           // Real-time periodic database update every 10 seconds
           if (prev % 10 === 0) {
-            const allSolved = Object.values(solvedQuestions).reduce((acc, l) => acc + l.length, 0);
+            const allSolved = getTotalSolvedCount(solvedQuestions);
             syncScoreToDatabase(score, completedPortals.length, allSolved, prev);
           }
           return prev - 1;
@@ -172,7 +176,7 @@ export default function App() {
       const p = currentParticipantRef.current;
       const dbId = participantDbIdRef.current;
       if (p || dbId) {
-        const allSolved = Object.values(solvedQuestions).reduce((acc, l) => acc + l.length, 0);
+        const allSolved = getTotalSolvedCount(solvedQuestions);
         syncScoreToDatabase(score, completedPortals.length, allSolved, timeRemaining);
       }
     };
@@ -184,7 +188,7 @@ export default function App() {
   useEffect(() => {
     if (screen === 'completed' && (currentParticipant || participantDbIdRef.current)) {
       setIsSyncingScore(true);
-      const totalSolved = (Object.values(solvedQuestions) as number[][]).reduce((acc, l) => acc + l.length, 0);
+      const totalSolved = getTotalSolvedCount(solvedQuestions);
       const rank = getRank(score, completedPortals.length);
 
       updateParticipantLiveScore(participantDbIdRef.current, currentParticipant, {
@@ -344,10 +348,7 @@ export default function App() {
       ? completedPortals.length + 1
       : completedPortals.length;
 
-    const allSolvedCount = Object.values(solvedQuestions).reduce(
-      (acc, l) => acc + l.length,
-      0
-    ) + (isAlreadySolved ? 0 : 1);
+    const allSolvedCount = getTotalSolvedCount(solvedQuestions) + (isAlreadySolved ? 0 : 1);
 
     // Strictly enforce minimum 50 and maximum 250
     setScore(nextScore);

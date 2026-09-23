@@ -148,6 +148,10 @@ class SoundEngine {
     } catch {}
   }
 
+  public playFail() {
+    this.playWrong();
+  }
+
   public playVictory() {
     if (!this.enabled) return;
     try {
