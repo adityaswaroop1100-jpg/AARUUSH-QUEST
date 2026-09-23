@@ -145,7 +145,7 @@ export const CyberCombatArena: React.FC<CyberCombatArenaProps> = ({
 
           {/* Hero SVG Rig */}
           <div className="relative w-16 h-20 sm:w-20 sm:h-24">
-            <svg viewBox="0 0 100 120" className="w-full h-full filter drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]">
+            <svg viewBox="-15 0 135 120" className="w-full h-full overflow-visible filter drop-shadow-[0_0_12px_rgba(0,240,255,0.7)]">
               {/* Back Plasma Wings / Thruster Jet */}
               <path
                 d="M 25 55 L 5 45 L 20 70 Z"

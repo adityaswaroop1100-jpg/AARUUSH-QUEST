@@ -88,18 +88,18 @@ export const ChallengeModal: React.FC<ChallengeModalProps> = ({
       setLastResult(result);
     }
 
-    // Fast, snappy auto-advance for both right and wrong answers!
+    // Fast, snappy auto-advance giving time to see attack/deflect combat animation!
     if (questionIndex + 1 < questionsList.length) {
       if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
       autoReturnTimerRef.current = setTimeout(() => {
         handleNextQuestion();
-      }, 750);
+      }, 850);
     } else {
-      // Last question in this domain! Return to map quickly
+      // Last question in this domain! Return to map after victory hit
       if (autoReturnTimerRef.current) clearTimeout(autoReturnTimerRef.current);
       autoReturnTimerRef.current = setTimeout(() => {
         onBackToMap();
-      }, 950);
+      }, 1050);
     }
   };
 
